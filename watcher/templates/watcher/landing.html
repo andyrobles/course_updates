@@ -1,0 +1,12 @@
+{% extends 'watcher/base.html' %}
+
+{% block navbar_right %}
+<a class="btn btn-light border" href="{% url 'create_account' %}" role="button">
+	<i class="fas fa-user-plus"></i>
+	Create Account
+</a>
+<a class="btn btn-light border" href="{% url 'sign_in' %}" role="button">
+	<i class="fas fa-sign-in-alt"></i>
+	Sign In
+</a>
+{% endblock %}

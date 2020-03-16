@@ -1,28 +1,15 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<link rel="stylesheet" type="text/css" href="{% static "watcher/bootstrap-4.3.1-dist/css/bootstrap.css" %}">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="{% static "watcher/bootstrap-4.3.1-dist/js/bootstrap.min.js" %}"></script>
-	<script src="https://kit.fontawesome.com/dd9153f0ae.js" crossorigin="anonymous"></script>
-</head>
-<body>
-	<nav class="navbar navbar-light bg-light">
-		<div>
-			<!-- Content floats left -->
-		</div>
-		<div>
-			<a class="btn btn-light border" href="{% url 'create_account' %}" role="button">
-				<i class="fas fa-user-plus"></i>
-				Create Account
-			</a>
-			<a class="btn btn-light border" href="{% url 'sign_in' %}" role="button">
-				<i class="fas fa-sign-in-alt"></i>
-				Sign In
-			</a>
-		</div>
-	</nav>
-	{% block content %}{% endblock %}
-</body>
-</html>
+{% extends 'watcher/base.html' %}
+
+{% block navbar_left %}
+<a class="btn btn-light border" href="{% url 'add_course' %}" role="button">
+	<i class="fas fa-graduation-cap"></i>
+    Add Course
+</a>
+{% endblock %}
+
+{% block navbar_right %}
+<a class="btn btn-light border" href="{% url 'sign_out' %}" role="button">
+	<i class="fas fa-sign-out-alt"></i>
+	Sign Out 
+</a>
+{% endblock %}

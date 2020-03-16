@@ -1,5 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import AccountForm, CourseForm 
+
+def landing(request):
+	return render(request, 'watcher/landing.html')
 
 def index(request):
 	return render(request, 'watcher/index.html')
@@ -24,4 +27,7 @@ def add_course(request):
 		'icon': 'graduation-cap',
 		'modal': 'Add Course'
 	})
+
+def sign_out(request):
+	return redirect('landing')
 		

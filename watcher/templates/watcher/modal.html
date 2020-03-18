@@ -1,0 +1,49 @@
+<div class="modal" data-backdrop="static" id="modalWindow" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <i class="fas fa-{{ icon }}"></i>
+            {{ modal }}
+          </div>
+          <a href="{{ close_url }}" class="close">&times;</a>
+        </div>
+        <div class="modal-body">
+            <form id="form" action="{{ url }}" method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                {{ field.label_tag }}<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        ...
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Understood</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                {{ field }}
+                <br>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="modal-footer">
+          <a href="{{ close_url }}" class="btn btn-secondary">Close</a>
+          <button type="submit" form="form" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+$('#modalWindow').modal('show')
+</script>

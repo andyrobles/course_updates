@@ -21,6 +21,16 @@ EXPECTED_COURSE_ATTRIBUTES = [
             'location': 'Health Science Center 103', 
             'status': 'OPEN',
             'waitlist_availability': '5 out of 5 spots open' 
+        },
+        {   
+            'key': 72522,
+            'crn': '72522',
+            'title': 'CS M10DB - Database Mgmt Systems and App',
+            'instructor': 'Nikjeh, Esmaail',
+            'meeting_time': 'T, W 12:00pm - 01:50pm',
+            'location': 'Moorpark Life Sci/Math/Comp 138', 
+            'status': 'OPEN',
+            'waitlist_availability': '5 out of 5 spots open' 
         }
     ]
 

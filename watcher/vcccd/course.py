@@ -47,9 +47,18 @@ class Course:
 
     @property
     def waitlist_availability(self):
-        print(self.course_details_soup.prettify())
-        waitlist_availability = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[2].get_text()
+        return '{} out of {} spots open'.format(self._spots_left, self._total_spots)
         return waitlist_availability 
+
+    @property
+    def _spots_left(self):
+        spots_left = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[3].get_text()
+        return spots_left
+
+    @property
+    def _total_spots(self):
+        total_spots = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[5].get_text()
+        return total_spots
 
     def get_course_search_results_html(self):
         crn = self.crn

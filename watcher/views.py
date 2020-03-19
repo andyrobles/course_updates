@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateAccountForm, SignInForm, CourseForm
+from watcher.vcccd import CourseSnapshot
 
 def require_sign_in(view_function):
 	def wrapped_view_function(request):

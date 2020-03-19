@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib.request
 
-class Course:
+class CourseSnapshot:
     def __init__(self, crn):
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()

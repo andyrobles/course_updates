@@ -1,0 +1,1 @@
+from .vcccd import CourseSnapshot

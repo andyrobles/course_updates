@@ -1,5 +1,5 @@
 import unittest
-from course import Course 
+from course import CourseSnapshot 
 
 EXPECTED_COURSE_ATTRIBUTES = [
         {
@@ -46,7 +46,7 @@ EXPECTED_COURSE_ATTRIBUTES = [
 
 class TestCourseAttributes(unittest.TestCase):
     def setUp(self):
-        self.course_list = [Course(course_details['key']) for course_details in EXPECTED_COURSE_ATTRIBUTES]
+        self.course_list = [CourseSnapshot(course_details['key']) for course_details in EXPECTED_COURSE_ATTRIBUTES]
         self.actual_and_expected = zip(self.course_list, EXPECTED_COURSE_ATTRIBUTES)
 
     def test_courses(self):

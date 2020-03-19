@@ -1,10 +1,9 @@
 import unittest
 from course import Course 
 
-class TestCRN71596(unittest.TestCase):
-    def setUp(self):
-        self.course = Course(71596)
-        self.expected_values = {
+EXPECTED_COURSE_ATTRIBUTES = [
+        {
+            'key': 71596,
             'crn': '71596',
             'title': 'CS M10P - Python Programming',
             'instructor': 'Nikjeh, Esmaail',
@@ -12,34 +11,9 @@ class TestCRN71596(unittest.TestCase):
             'location': 'Moorpark Life Sci/Math/Comp 138', 
             'status': 'OPEN',
             'waitlist_availability': '5 out of 5 spots open' 
-        }
-
-    def test_crn(self):
-        self.assertEqual(self.course.crn, self.expected_values['crn'])
-
-    def test_title(self):
-        self.assertEqual(self.course.title, self.expected_values['title'])
-
-    def test_instructor(self):
-        self.assertEqual(self.course.instructor, self.expected_values['instructor'])
-
-    def test_meeting_time(self):
-        self.assertEqual(self.course.meeting_time, self.expected_values['meeting_time'])
-
-    def test_location(self):
-        self.assertEqual(self.course.location, self.expected_values['location'])
-
-    def test_status(self):
-        self.assertEqual(self.course.status, self.expected_values['status'])
-
-    def test_waitlist_availability(self):
-        self.assertEqual(self.course.waitlist_availability, self.expected_values['waitlist_availability'])
-
-
-class TestCRN72525(unittest.TestCase):
-    def setUp(self):
-        self.course = Course(72525)
-        self.expected_values = {
+        },
+        {   
+            'key': 72525,
             'crn': '72525',
             'title': 'CS M15W - ClientSide WebD HTML/JavaScrip',
             'instructor': 'Alnaji, Loay',
@@ -48,27 +22,22 @@ class TestCRN72525(unittest.TestCase):
             'status': 'OPEN',
             'waitlist_availability': '5 out of 5 spots open' 
         }
+    ]
 
-    def test_crn(self):
-        self.assertEqual(self.course.crn, self.expected_values['crn'])
+class TestCourseAttributes(unittest.TestCase):
+    def setUp(self):
+        self.course_list = [Course(course_details['key']) for course_details in EXPECTED_COURSE_ATTRIBUTES]
+        self.actual_and_expected = zip(self.course_list, EXPECTED_COURSE_ATTRIBUTES)
 
-    def test_title(self):
-        self.assertEqual(self.course.title, self.expected_values['title'])
-
-    def test_instructor(self):
-        self.assertEqual(self.course.instructor, self.expected_values['instructor'])
-
-    def test_meeting_time(self):
-        self.assertEqual(self.course.meeting_time, self.expected_values['meeting_time'])
-
-    def test_location(self):
-        self.assertEqual(self.course.location, self.expected_values['location'])
-
-    def test_status(self):
-        self.assertEqual(self.course.status, self.expected_values['status'])
-
-    def test_waitlist_availability(self):
-        self.assertEqual(self.course.waitlist_availability, self.expected_values['waitlist_availability'])
+    def test_courses(self):
+        for current_pair in self.actual_and_expected:
+            self.assertEqual(current_pair[0].crn, current_pair[1]['crn'])
+            self.assertEqual(current_pair[0].title, current_pair[1]['title'])
+            self.assertEqual(current_pair[0].instructor, current_pair[1]['instructor'])
+            self.assertEqual(current_pair[0].meeting_time, current_pair[1]['meeting_time'])
+            self.assertEqual(current_pair[0].location, current_pair[1]['location'])
+            self.assertEqual(current_pair[0].status, current_pair[1]['status'])
+            self.assertEqual(current_pair[0].waitlist_availability, current_pair[1]['waitlist_availability'])
 
 if __name__ == '__main__':
     unittest.main()

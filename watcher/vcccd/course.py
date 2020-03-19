@@ -22,8 +22,18 @@ class Course:
 
     @property
     def meeting_time(self):
-        return 'Mon at 3:00pm-5:50pm'
-    
+        return '{} {}'.format(self._weekdays, self._time_span)
+
+    @property
+    def _weekdays(self):
+        weekdays = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4].get_text()
+        return weekdays
+
+    @property
+    def _time_span(self):
+        time = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[11].get_text()
+        return time
+
     @property
     def location(self):
         location = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()

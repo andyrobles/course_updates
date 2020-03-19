@@ -8,7 +8,7 @@ class TestCourseAttributes(unittest.TestCase):
             'crn': '71596',
             'title': 'CS M10P - Python Programming',
             'instructor': 'Nikjeh, Esmaail',
-            'meeting_time': 'Mon at 3:00pm-5:50pm',
+            'meeting_time': 'M 03:00pm - 05:50pm',
             'location': 'Moorpark Life Sci/Math/Comp 138', 
             'status': 'OPEN',
             'waitlist_availability': '5 out of 5 spots open' 

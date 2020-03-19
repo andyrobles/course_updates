@@ -25,10 +25,22 @@ class Course:
     def meeting_time(self):
         return '{} {}'.format(self._weekdays, self._time_span)
 
+    def _weekday(self, index):
+        weekday = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4 + index].get_text()
+        return weekday
+
     @property
     def _weekdays(self):
-        weekdays = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4].get_text()
-        return weekdays
+        substring = ''
+        for i in range(7):
+            current_weekday = self._weekday(i)
+            if current_weekday in ['M', 'T', 'W', 'R', 'F', 'S']:
+                if i == 0:
+                    substring = current_weekday
+                else:
+                    substring = '{}, {}'.format(substring, current_weekday)
+        
+        return substring
 
     @property
     def _time_span(self):

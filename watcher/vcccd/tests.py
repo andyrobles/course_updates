@@ -41,7 +41,7 @@ class TestCRN72525(unittest.TestCase):
         self.course = Course(72525)
         self.expected_values = {
             'crn': '72525',
-            'title': 'CS M15W - ClientSide WebD HTML/Javascrip',
+            'title': 'CS M15W - ClientSide WebD HTML/JavaScrip',
             'instructor': 'Alnaji, Loay',
             'meeting_time': 'T, R 12:00pm - 02:15pm',
             'location': 'Health Science Center 103', 

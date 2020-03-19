@@ -26,7 +26,9 @@ class Course:
     
     @property
     def location(self):
-        return 'Moorpark Life Sci/Math/Comp 138'
+        location = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
+        return location
+
 
     @property
     def status(self):

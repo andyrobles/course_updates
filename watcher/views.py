@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .forms import CreateAccountForm, SignInForm, CourseForm
 
 def require_sign_in(view_function):
@@ -106,4 +106,8 @@ def add_course(request):
 	})
 
 def sign_out(request):
+	# Sign out whichever user is currently signed in
+	logout(request)
+
+	# Redirect to landing page
 	return redirect('landing')

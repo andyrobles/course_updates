@@ -7,7 +7,7 @@ class TestCourseAttributes(unittest.TestCase):
         self.expected_values = {
             'crn': '71596',
             'title': 'CS M10P - Python Programming',
-            'instructor': 'Esmaail Nikjeh',
+            'instructor': 'Nikjeh, Esmaail',
             'meeting_time': 'Mon at 3:00pm-5:50pm',
             'location': 'Moorpark Life Sci/Math/Comp 138', 
             'status': 'OPEN',

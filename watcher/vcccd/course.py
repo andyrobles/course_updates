@@ -17,7 +17,8 @@ class Course:
 
     @property
     def instructor(self):
-        return 'Esmaail Nikjeh'
+    	professor = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
+    	return professor
 
     @property
     def meeting_time(self):

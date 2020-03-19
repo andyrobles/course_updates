@@ -4,7 +4,7 @@ import urllib.request
 class Course:
     def __init__(self, crn):
         self._crn = crn
-        self.soup = self.get_soup()
+        self.course_search_results_soup = self.get_course_search_results_soup()
 
     @property
     def crn(self):
@@ -12,12 +12,12 @@ class Course:
 
     @property
     def title(self):
-        title = self.soup.findAll("td", {"class": "crn_header"})[0].get_text() 
+        title = self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text() 
         return title.rstrip()
 
     @property
     def instructor(self):
-    	professor = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
+    	professor = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
     	return professor
 
     @property
@@ -26,23 +26,23 @@ class Course:
 
     @property
     def _weekdays(self):
-        weekdays = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4].get_text()
+        weekdays = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4].get_text()
         return weekdays
 
     @property
     def _time_span(self):
-        time = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[11].get_text()
+        time = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[11].get_text()
         return time
 
     @property
     def location(self):
-        location = self.soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
+        location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
         return location
 
 
     @property
     def status(self):
-        status = self.soup.findAll('table')[2].findAll('tr')[3].find_all('td')[0].get_text()
+        status = self.course_search_results_soup.findAll('table')[2].findAll('tr')[3].find_all('td')[0].get_text()
         return status
 
     @property
@@ -57,7 +57,7 @@ class Course:
         html_doc = urllib.request.urlopen(full_url).read()
         return html_doc	
 
-    def get_soup(self):
+    def get_course_search_results_soup(self):
         plain_html = self.get_html()
-        soup = BeautifulSoup(plain_html, 'html.parser')
-        return soup
+        course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
+        return course_search_results_soup

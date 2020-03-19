@@ -5,6 +5,7 @@ class Course:
     def __init__(self, crn):
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()
+        self.course_details_soup = self.get_course_details_soup()
 
     @property
     def crn(self):
@@ -39,7 +40,6 @@ class Course:
         location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
         return location
 
-
     @property
     def status(self):
         status = self.course_search_results_soup.findAll('table')[2].findAll('tr')[3].find_all('td')[0].get_text()
@@ -47,9 +47,11 @@ class Course:
 
     @property
     def waitlist_availability(self):
-        return '5 out of 5 spots open'
+        print(self.course_details_soup.prettify())
+        waitlist_availability = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[2].get_text()
+        return waitlist_availability 
 
-    def get_html(self):
+    def get_course_search_results_html(self):
         crn = self.crn
         url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_listthislist'
         url_values = 'TERM=202007&TERM_DESC=Fall+2020&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_camp=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_subj=%25&sel_crse=&sel_crn=' + crn + '&sel_title=&sel_ptrm=%25&sel_camp=%25&sel_instr=%25&begin_hh=5&begin_mi=0&begin_ap=a&end_hh=11&end_mi=0&end_ap=p&sel_new1=&aa=N&bb=N&dd=N&ee=N&ff=N&ztc=N'
@@ -58,6 +60,16 @@ class Course:
         return html_doc	
 
     def get_course_search_results_soup(self):
-        plain_html = self.get_html()
+        plain_html = self.get_course_search_results_html()
         course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
         return course_search_results_soup
+
+    def get_course_details_html(self):
+        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_course_popup?vsub=CS&vcrse=M10P&vterm=202007&vcrn={}'.format(self.crn)
+        html_doc = urllib.request.urlopen(url).read()
+        return html_doc
+
+    def get_course_details_soup(self):
+        plain_html = self.get_course_details_html()
+        return BeautifulSoup(plain_html, 'html.parser')
+    

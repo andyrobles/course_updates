@@ -29,7 +29,8 @@ class Course:
 
     @property
     def status(self):
-        return 'OPEN'
+        status = self.soup.findAll('table')[2].findAll('tr')[3].find_all('td')[0].get_text()
+        return status
 
     @property
     def waitlist_availability(self):

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateAccountForm, SignInForm, CourseForm
 from watcher.vcccd import CourseSnapshot
+from .models import Course
 
 def require_sign_in(view_function):
 	def wrapped_view_function(request):
@@ -50,13 +51,12 @@ def create_account(request):
 			'message': 'Form contained one or more invalid fields'
 		})
 
-	else:
-		# Render create account form if a get request		
-		return render(request, 'watcher/landing_modal.html', {
-			'form': CreateAccountForm(),
-			'icon': 'user-plus',
-			'modal_title': 'Create Account'
-		})
+	# Render create account form if a get request		
+	return render(request, 'watcher/landing_modal.html', {
+		'form': CreateAccountForm(),
+		'icon': 'user-plus',
+		'modal_title': 'Create Account'
+	})
 
 def sign_in(request):
 	if request.method == 'POST':
@@ -100,6 +100,35 @@ def sign_in(request):
 
 @require_sign_in
 def add_course(request):
+	if request.method == 'POST':
+		# Get submitted course form
+		course_form = CourseForm(request.POST)
+
+		if course_form.is_valid():
+			# Get snapshot of course specified by user by CRN
+			course_snapshot = CourseSnapshot(course_form['course_reference_number'])
+
+			# Create a course with attributes identical to snapshot
+			course = Course(
+				crn=course_snapshot.crn,
+				title=course_snapshot.title,
+				instructor=course_snapshot.instructor,
+				meeting_time=course_snapshot.meeting_time,
+				location=course_snapshot.location,
+				status=course_snapshot.status,
+				waitlist_availability=course_snapshot.waitlist_availability
+			)
+
+			course.save()
+
+		# Return error message if invalid form
+		return render(request, 'watcher.index_modal.html', {
+			'modal_title': 'Try Again',
+			'icon': 'exclamation-triangle',
+			'message': 'Form contained one or more invalid fields'
+		})
+
+	# Render create course form if a get request
 	return render(request, 'watcher/index_modal.html', {
 		'form': CourseForm(),
 		'icon': 'graduation-cap',

@@ -1,7 +1,7 @@
 from django.db import models
 
 class Course(models.Model):
-    crn = models.IntegerField()
+    crn = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
     instructor = models.CharField(max_length=200)
     meeting_time = models.CharField(max_length=200)

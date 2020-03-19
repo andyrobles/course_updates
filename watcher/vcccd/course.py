@@ -32,10 +32,12 @@ class Course:
     @property
     def _weekdays(self):
         substring = ''
+        num_weeks = 0
         for i in range(7):
             current_weekday = self._weekday(i)
             if current_weekday in ['M', 'T', 'W', 'R', 'F', 'S']:
-                if i == 0:
+                num_weeks += 1
+                if num_weeks == 1:
                     substring = current_weekday
                 else:
                     substring = '{}, {}'.format(substring, current_weekday)

@@ -76,12 +76,8 @@ WSGI_APPLICATION = 'course_sniper.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'CourseSniper': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'NAME': 'CourseSniper',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
 

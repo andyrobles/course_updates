@@ -31,6 +31,16 @@ EXPECTED_COURSE_ATTRIBUTES = [
             'location': 'Moorpark Life Sci/Math/Comp 138', 
             'status': 'OPEN',
             'waitlist_availability': '5 out of 5 spots open' 
+        },
+        {   
+            'key': 72506,
+            'crn': '72506',
+            'title': 'CS M125 - Prog Concepts Methodology I',
+            'instructor': 'Alnaji, Loay',
+            'meeting_time': 'M 09:00am - 11:50am',
+            'location': 'Moorpark Life Sci/Math/Comp 138', 
+            'status': 'OPEN',
+            'waitlist_availability': '5 out of 5 spots open' 
         }
     ]
 

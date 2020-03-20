@@ -8,7 +8,7 @@
 	<script src="https://kit.fontawesome.com/dd9153f0ae.js" crossorigin="anonymous"></script>
 </head>
 <body>
-	<nav class="navbar navbar-light bg-light">
+	<nav class="navbar navbar-light bg-light border-bottom">
 		<div>
             {% block navbar_left %}{% endblock %}
 		</div>
@@ -16,6 +16,7 @@
             {% block navbar_right %}{% endblock %}
 		</div>
 	</nav>
+	{% block content %}{% endblock %}
 	{% block modal %}{% endblock %}
 </body>
 </html>

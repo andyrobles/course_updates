@@ -19,7 +19,7 @@ def landing(request):
 
 @require_sign_in
 def index(request):
-	return render(request, 'watcher/index.html')
+	return render(request, 'watcher/index.html', {'course_list': Course.objects.all()})
 
 def create_account(request):
 	if request.method == 'POST':
@@ -126,6 +126,7 @@ def add_course(request):
 		else:
 			# Return error message if invalid form
 			return render(request, 'watcher/index_modal.html', {
+				'course_list': Course.objects.all(),
 				'modal_title': 'Try Again',
 				'icon': 'exclamation-triangle',
 				'message': 'Form contained one or more invalid fields'
@@ -133,6 +134,7 @@ def add_course(request):
 
 	# Render create course form if a get request
 	return render(request, 'watcher/index_modal.html', {
+		'course_list': Course.objects.all(),
 		'form': CourseForm(),
 		'icon': 'graduation-cap',
 		'modal_title': 'Add Course'

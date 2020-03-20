@@ -13,3 +13,50 @@
 	Sign Out 
 </a>
 {% endblock %}
+
+{% block content %}
+<div class="m-3">
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Course</th>
+				<th>Additional Info</th>
+				<th>Status</th>
+				<th>Waitlist Availability</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for course in course_list %}
+			<tr>
+				<td>
+					<div style="font-size: 21px;">
+					{{ course.title }}
+					<br>
+					CRN: {{ course.crn }}
+					</div>
+				</td>
+				<td>
+					<div style="font-size: 17px;">
+					Instructor: {{ course.instructor }}
+					<br>
+					Meeting Time: {{ course.meeting_time }}
+					<br>
+					Location: {{ course.location }}
+					</div>
+				</td>
+				<td>
+					<div style="font-size: 21px;">
+					{{ course.status }}
+					</div>
+				</td>
+				<td>
+					<div style="font-size: 21px;">
+					{{ course.waitlist_availability }}
+					</div>
+				</td>
+			</tr>
+			{% endfor %}
+		</tbody>	
+	</table>
+</div>
+{% endblock %}

@@ -29,14 +29,14 @@
 			{% for course in course_list %}
 			<tr>
 				<td>
-					<div style="font-size: 21px;">
+					<div style="font-size: 18px;">
 					{{ course.title }}
 					<br>
 					CRN: {{ course.crn }}
 					</div>
 				</td>
 				<td>
-					<div style="font-size: 17px;">
+					<div style="font-size: 14px;">
 					Instructor: {{ course.instructor }}
 					<br>
 					Meeting Time: {{ course.meeting_time }}
@@ -45,12 +45,22 @@
 					</div>
 				</td>
 				<td>
-					<div style="font-size: 21px;">
-					{{ course.status }}
+					<div class="font-weight-bold" style="font-size: 18px;">
+						{% if course.status == 'OPEN' %}
+						<div style="color: green;">
+						{% elif course.status == 'Waitlisted' %}
+						<div style="color: orange;">
+						{% elif course.status == 'CLOSED' %}
+						<div style="color: red;">
+						{% else %}
+						<div style="color: black;">
+						{% endif %}
+						{{ course.status }}
+						</div>
 					</div>
 				</td>
 				<td>
-					<div style="font-size: 21px;">
+					<div style="font-size: 18px;">
 					{{ course.waitlist_availability }}
 					</div>
 				</td>

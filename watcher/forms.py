@@ -38,7 +38,7 @@ class SignInForm(forms.Form):
     ))
 
 class CourseForm(forms.Form):
-    course_reference_number=forms.IntegerField(label="CRN", required=True, widget=forms.NumberInput(
+    course_reference_number=forms.CharField(label="CRN", required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'autocomplete': 'off',

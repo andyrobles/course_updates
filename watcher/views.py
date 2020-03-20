@@ -83,13 +83,13 @@ def sign_in(request):
 				'modal_title': 'Try Again',
 				'message': 'Username or password were incorrect'
 			})
-		
-		# Tell user to try again if form was invalid
-		return render(request, 'watcher/landing_modal.html', {
-			'icon': 'exclamation-triangle',
-			'modal_title': 'Try Again',
-			'message': 'Form contained one or more invalid fields'
-		})
+		else:
+			# Tell user to try again if form was invalid
+			return render(request, 'watcher/landing_modal.html', {
+				'icon': 'exclamation-triangle',
+				'modal_title': 'Try Again',
+				'message': 'Form contained one or more invalid fields'
+			})
 
 	# Provide user a blank sign in form
 	return render(request, 'watcher/landing_modal.html', {
@@ -106,7 +106,7 @@ def add_course(request):
 
 		if course_form.is_valid():
 			# Get snapshot of course specified by user by CRN
-			course_snapshot = CourseSnapshot(course_form['course_reference_number'])
+			course_snapshot = CourseSnapshot(course_form.cleaned_data['course_reference_number'])
 
 			# Create a course with attributes identical to snapshot
 			course = Course(
@@ -120,13 +120,16 @@ def add_course(request):
 			)
 
 			course.save()
-
-		# Return error message if invalid form
-		return render(request, 'watcher.index_modal.html', {
-			'modal_title': 'Try Again',
-			'icon': 'exclamation-triangle',
-			'message': 'Form contained one or more invalid fields'
-		})
+			
+			return redirect('index')
+			
+		else:
+			# Return error message if invalid form
+			return render(request, 'watcher/index_modal.html', {
+				'modal_title': 'Try Again',
+				'icon': 'exclamation-triangle',
+				'message': 'Form contained one or more invalid fields'
+			})
 
 	# Render create course form if a get request
 	return render(request, 'watcher/index_modal.html', {

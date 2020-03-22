@@ -41,6 +41,9 @@ def create_account(request):
 				password=create_account_form.cleaned_data['password']
 			)
 
+			# Authenticate user that we just created  
+			login(request, user)
+
 			# Redirect to index page
 			return redirect('index')
 		

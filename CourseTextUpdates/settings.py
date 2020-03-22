@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'course_sniper.urls'
+ROOT_URLCONF = 'CourseTextUpdates.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'course_sniper.wsgi.application'
+WSGI_APPLICATION = 'CourseTextUpdates.wsgi.application'
 
 
 # Database

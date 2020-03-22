@@ -19,7 +19,7 @@ def landing(request):
 
 @require_sign_in
 def index(request):
-	return render(request, 'watcher/index.html', {'course_list': Course.objects.all()})
+	return render(request, 'watcher/index.html', {'course_list': Course.objects.filter(user=request.user)})
 
 def create_account(request):
 	if request.method == 'POST':
@@ -117,6 +117,7 @@ def add_course(request):
 
 			# Create a course with attributes identical to snapshot
 			course = Course(
+				user=request.user,
 				crn=course_snapshot.crn,
 				title=course_snapshot.title,
 				instructor=course_snapshot.instructor,
@@ -134,7 +135,7 @@ def add_course(request):
 		else:
 			# Return error message if invalid form
 			return render(request, 'watcher/index_modal.html', {
-				'course_list': Course.objects.all(),
+				'course_list': Course.objects.filter(user=request.user),
 				'modal_title': 'Try Again',
 				'icon': 'exclamation-triangle',
 				'message': 'Form contained one or more invalid fields'
@@ -142,7 +143,7 @@ def add_course(request):
 
 	# Render create course form if a get request
 	return render(request, 'watcher/index_modal.html', {
-		'course_list': Course.objects.all(),
+		'course_list': Course.objects.filter(user=request.user),
 		'form': AddCourseForm(),
 		'icon': 'graduation-cap',
 		'modal_title': 'Add Course'
@@ -152,6 +153,8 @@ def remove_course(request):
 	if request.method == 'POST':
 		# Get submitted form form user when request method is post
 		form = RemoveCourseForm(request.POST)
+		form.fields['course'].queryset=Course.objects.filter(user=request.user)
+			
 
 		if form.is_valid():
 			# Get selected course from user and delete it
@@ -162,16 +165,19 @@ def remove_course(request):
 
 		# Return error form when form is invalid
 		return render(request, 'watcher/index_modal.html', {
-			'course_list': Course.objects.all(),
+			'course_list': Course.objects.filter(user=request.user),
 			'icon': 'exclamation-triangle',
 			'modal_title': 'Try Again',
 			'message': 'Submitted form was invalid'
 		})
-		
+
+	remove_course_form = RemoveCourseForm()
+	remove_course_form.fields['course'].queryset=Course.objects.filter(user=request.user)
+			
 	# Return blank remove coures form when request method is get
 	return render(request, 'watcher/index_modal.html', {
-		'course_list': Course.objects.all(),
-		'form': RemoveCourseForm(),
+		'course_list': Course.objects.filter(user=request.user),
+		'form': remove_course_form,
 		'icon': 'trash',
 		'modal_title': 'Remove Course'
 	})
@@ -182,3 +188,4 @@ def sign_out(request):
 
 	# Redirect to landing page
 	return redirect('landing')
+

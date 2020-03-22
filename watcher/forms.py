@@ -49,7 +49,7 @@ class AddCourseForm(forms.Form):
     ))
 
 class RemoveCourseForm(forms.Form):
-    course=forms.ModelChoiceField(queryset=Course.objects.all(), widget=forms.Select(
+    course = forms.ModelChoiceField(label="Courses", queryset=Course.objects.none(), widget=forms.Select(
         attrs={
             'class': 'form-control',
         }

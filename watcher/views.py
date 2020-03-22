@@ -116,6 +116,17 @@ def add_course(request):
 			course_snapshot = CourseSnapshot(course_form.cleaned_data['course_reference_number'])
 
 			# Create a course with attributes identical to snapshot
+
+			identical_courses = Course.objects.filter(user=request.user, crn=course_snapshot.crn)
+
+			if len(identical_courses) >= 1:
+				return render(request, 'watcher/index_modal.html', {
+					'course_list': Course.objects.filter(user=request.user),
+					'modal_title': 'Duplicate Course',
+					'icon': 'exclamation-triangle',
+					'message': 'Course with this CRN already exists on watch list'
+				})
+
 			course = Course(
 				user=request.user,
 				crn=course_snapshot.crn,

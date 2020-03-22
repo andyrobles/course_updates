@@ -1,15 +1,15 @@
-{% extends 'courses/base.html' %}
+{% extends 'base.html' %}
 
 {% block navbar_buttons %}
-<a class="btn btn-light border" href="{% url 'add_course' %}" role="button">
+<a class="btn btn-light border" href="{% url 'courses:add_course' %}" role="button">
 	<i class="fas fa-graduation-cap"></i>
     Add Course
 </a>
-<a class="btn btn-light border" href="{% url 'remove_course' %}" role="button">
+<a class="btn btn-light border" href="{% url 'courses:remove_course' %}" role="button">
 	<i class="fas fa-trash"></i>
     Remove Course 
 </a>
-<a class="btn btn-light border" href="{% url 'sign_out' %}" role="button">
+<a class="btn btn-light border" href="{% url 'accounts:sign_out' %}" role="button">
 	<i class="fas fa-sign-out-alt"></i>
 	Sign Out 
 </a>

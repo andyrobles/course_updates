@@ -3,7 +3,6 @@ from course import CourseSnapshot
 
 EXPECTED_COURSE_ATTRIBUTES = [
     {
-        'key': 71596,
         'crn': '71596',
         'title': 'CS M10P - Python Programming',
         'instructor': 'Nikjeh, Esmaail',
@@ -13,11 +12,21 @@ EXPECTED_COURSE_ATTRIBUTES = [
         'seating_availability': '35 out of 35 spots open',
         'waitlist_availability': '5 out of 5 spots open' 
     },
+    {
+        'crn': '73039',
+        'title': 'CS M01 - Intro Computer Science',
+        'instructor': 'Alnaji, Loay',
+        'meeting_time': 'Distance Education Class',
+        'location': 'Moorpark Online/Internet',
+        'status': 'OPEN',
+        'seating_availability': '55 out of 55 spots open',
+        'waitlist_availability': '5 out of 5 spots open'
+    }
 ]
 
 class TestCourseAttributes(unittest.TestCase):
     def setUp(self):
-        self.course_list = [CourseSnapshot(course_details['key']) for course_details in EXPECTED_COURSE_ATTRIBUTES]
+        self.course_list = [CourseSnapshot(int(course_details['crn'])) for course_details in EXPECTED_COURSE_ATTRIBUTES]
         self.actual_and_expected = zip(self.course_list, EXPECTED_COURSE_ATTRIBUTES)
 
     def test_courses(self):

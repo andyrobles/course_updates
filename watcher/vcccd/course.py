@@ -18,16 +18,24 @@ class CourseSnapshot:
 
     @property
     def instructor(self):
-    	professor = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
-    	return professor
+        if self._is_distance_education_class():
+    	    return  self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[9].get_text()
+        else:
+            return self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
 
     @property
     def meeting_time(self):
+        if self._is_distance_education_class():
+            return 'Distance Education Class'
         return '{} {}'.format(self._weekdays, self._time_span)
 
     def _weekday(self, index):
         weekday = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4 + index].get_text()
         return weekday
+
+    def _is_distance_education_class(self):
+        # There are fewer cells in location meeting time column when an online course
+        return len(self._weekday(0)) > 5 
 
     @property
     def _weekdays(self):
@@ -51,8 +59,11 @@ class CourseSnapshot:
 
     @property
     def location(self):
-        location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
-        return location
+        if self._is_distance_education_class():
+            location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[5].get_text()
+        else:
+            location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
+        return location.strip()
 
     @property
     def status(self):

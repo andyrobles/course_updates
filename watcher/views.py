@@ -116,6 +116,7 @@ def add_course(request):
 				meeting_time=course_snapshot.meeting_time,
 				location=course_snapshot.location,
 				status=course_snapshot.status,
+				seating_availability=course_snapshot.seating_availability,
 				waitlist_availability=course_snapshot.waitlist_availability
 			)
 

@@ -7,4 +7,5 @@ class Course(models.Model):
     meeting_time = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     status = models.CharField(max_length=200)
+    seating_availability = models.CharField(max_length=200)
     waitlist_availability = models.CharField(max_length=200)

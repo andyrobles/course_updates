@@ -19,6 +19,7 @@
 				<th>Course</th>
 				<th>Additional Info</th>
 				<th>Status</th>
+				<th>Seating Availability</th>
 				<th>Waitlist Availability</th>
 			</tr>
 		</thead>
@@ -54,6 +55,11 @@
 						{% endif %}
 						{{ course.status }}
 						</div>
+					</div>
+				</td>
+				<td>
+					<div style="font-size: 18px;">
+					{{ course.seating_availability }}
 					</div>
 				</td>
 				<td>

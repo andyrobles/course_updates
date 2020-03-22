@@ -60,18 +60,31 @@ class CourseSnapshot:
         return status
 
     @property
-    def waitlist_availability(self):
-        return '{} out of {} spots open'.format(self._spots_left, self._total_spots)
-        return waitlist_availability 
+    def seating_availability(self):
+        return '{} out of {} spots open'.format(self._seating_spots_left, self._total_seating_spots)
 
     @property
-    def _spots_left(self):
-        spots_left = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[3].get_text()
+    def _seating_spots_left(self):
+        spots_left = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[2].get_text()
         return spots_left
 
     @property
-    def _total_spots(self):
-        total_spots = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[5].get_text()
+    def _total_seating_spots(self):
+        total_spots = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[0].get_text()
+        return total_spots
+
+    @property
+    def waitlist_availability(self):
+        return '{} out of {} spots open'.format(self.waitlist_spots_left, self._total_waitlist_spots)
+
+    @property
+    def waitlist_spots_left(self):
+        spots_left = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[5].get_text()
+        return spots_left
+
+    @property
+    def _total_waitlist_spots(self):
+        total_spots = self.course_details_soup.find_all('table')[2].find_all('tr')[2].find_all('td')[3].get_text()
         return total_spots
 
     def get_course_search_results_html(self):

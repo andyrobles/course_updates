@@ -84,7 +84,6 @@ def sign_in(request):
 
 	# Provide user a blank sign in form
 	return render(request, 'accounts/dialogue.html', {
-		'url': reverse('accounts:sign_in'),
 		'form': SignInForm(),
 		'icon': 'sign-in-alt',
 		'subject': 'Sign In'

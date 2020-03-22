@@ -1,6 +1,7 @@
 {% extends 'watcher/base.html' %}
+{% load static %}
 
-{% block navbar_right %}
+{% block navbar_buttons %}
 <a class="btn btn-light border" href="{% url 'create_account' %}" role="button">
 	<i class="fas fa-user-plus"></i>
 	Create Account
@@ -10,3 +11,15 @@
 	Sign In
 </a>
 {% endblock %}
+
+{% block content %}
+<div style="height: 50px;"></div>
+<div class="d-flex justify-content-center">
+	<div style="width: 470px;">
+		<h1 style="font-size: 50px;">Course Text Updates</h1>
+		<p style="font-size: 17px;">for Moorpark College, Ventura College, and Oxnard College</p>
+		<img src="{% static "watcher/images/landing.png" %}" style="width:450px;">
+	</div>
+</div>
+{% endblock %}
+

@@ -10,10 +10,10 @@
 <body>
 	<nav class="navbar navbar-light bg-light border-bottom">
 		<div>
-            {% block navbar_left %}{% endblock %}
+			<img src="{% static "watcher/images/logo.png" %}" style="height:40px;">
 		</div>
 		<div>
-            {% block navbar_right %}{% endblock %}
+            {% block navbar_buttons %}{% endblock %}
 		</div>
 	</nav>
 	{% block content %}{% endblock %}

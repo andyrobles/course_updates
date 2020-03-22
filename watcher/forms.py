@@ -1,4 +1,5 @@
 from django import forms
+from .models import Course
 
 class CreateAccountForm(forms.Form):
     email=forms.EmailField(label='Email', required=True, widget=forms.EmailInput(
@@ -37,10 +38,19 @@ class SignInForm(forms.Form):
         }
     ))
 
-class CourseForm(forms.Form):
+class AddCourseForm(forms.Form):
     course_reference_number=forms.CharField(label="CRN", required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
             'autocomplete': 'off',
         }
     ))
+
+class RemoveCourseForm(forms.Form):
+    course=forms.ModelChoiceField(queryset=Course.objects.all(), widget=forms.Select(
+        attrs={
+            'class': 'form-control',
+        }
+    ))
+    
+

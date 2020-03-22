@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import CreateAccountForm, SignInForm, CourseForm
+from .forms import CreateAccountForm, SignInForm, AddCourseForm, RemoveCourseForm
 from watcher.vcccd import CourseSnapshot
 from .models import Course
 
@@ -102,7 +102,7 @@ def sign_in(request):
 def add_course(request):
 	if request.method == 'POST':
 		# Get submitted course form
-		course_form = CourseForm(request.POST)
+		course_form = AddCourseForm(request.POST)
 
 		if course_form.is_valid():
 			# Get snapshot of course specified by user by CRN
@@ -136,9 +136,37 @@ def add_course(request):
 	# Render create course form if a get request
 	return render(request, 'watcher/index_modal.html', {
 		'course_list': Course.objects.all(),
-		'form': CourseForm(),
+		'form': AddCourseForm(),
 		'icon': 'graduation-cap',
 		'modal_title': 'Add Course'
+	})
+
+def remove_course(request):
+	if request.method == 'POST':
+		# Get submitted form form user when request method is post
+		form = RemoveCourseForm(request.POST)
+
+		if form.is_valid():
+			# Get selected course from user and delete it
+			course = form.cleaned_data['course']
+			course.delete()
+
+			return redirect('index')
+
+		# Return error form when form is invalid
+		return render(request, 'watcher/index_modal.html', {
+			'course_list': Course.objects.all(),
+			'icon': 'exclamation-triangle',
+			'modal_title': 'Try Again',
+			'message': 'Submitted form was invalid'
+		})
+		
+	# Return blank remove coures form when request method is get
+	return render(request, 'watcher/index_modal.html', {
+		'course_list': Course.objects.all(),
+		'form': RemoveCourseForm(),
+		'icon': 'trash',
+		'modal_title': 'Remove Course'
 	})
 
 def sign_out(request):

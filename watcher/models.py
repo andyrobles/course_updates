@@ -9,3 +9,6 @@ class Course(models.Model):
     status = models.CharField(max_length=200)
     seating_availability = models.CharField(max_length=200)
     waitlist_availability = models.CharField(max_length=200)
+
+    def __str__(self):
+        return '{} (CRN: {})'.format(self.title, self.crn)

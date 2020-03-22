@@ -26,7 +26,7 @@ def create_account(request):
 		# Get submitted create account form
 		create_account_form = CreateAccountForm(request.POST)
 
-		if create_account_form.is_valid():
+		if create_account_form.is_valid() and is_valid_phone_number(create_account_form.cleaned_data['phone_number']):
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
 				return render(request, 'watcher/landing_modal.html', {
@@ -37,7 +37,7 @@ def create_account(request):
 
 			# Create a user with the supplied email and password
 			user = User.objects.create_user(
-				username=create_account_form.cleaned_data['email'],
+				username=create_account_form.cleaned_data['phone_number'],
 				password=create_account_form.cleaned_data['password']
 			)
 
@@ -46,6 +46,7 @@ def create_account(request):
 
 			# Redirect to index page
 			return redirect('index')
+			
 		
 		# Return error message if invalid form
 		return render(request, 'watcher/landing_modal.html', {
@@ -66,10 +67,10 @@ def sign_in(request):
 		# Get form from post request
 		sign_in_form = SignInForm(request.POST)
 
-		if sign_in_form.is_valid():
+		if sign_in_form.is_valid() and is_valid_phone_number(sign_in_form.cleaned_data['phone_number']):
 			# Authenticate user with form data
 			user = authenticate(
-				username=sign_in_form.cleaned_data['email'],
+				username=sign_in_form.cleaned_data['phone_number'],
 				password=sign_in_form.cleaned_data['password']
 			)
 
@@ -100,6 +101,9 @@ def sign_in(request):
 		'icon': 'sign-in-alt',
 		'modal_title': 'Sign In'
 	})
+
+def is_valid_phone_number(string_value):
+	return len(string_value) == 9 and string_value.isdigit()
 
 @require_sign_in
 def add_course(request):

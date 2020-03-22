@@ -2,10 +2,11 @@ from django import forms
 from .models import Course
 
 class CreateAccountForm(forms.Form):
-    email=forms.EmailField(label='Email', required=True, widget=forms.EmailInput(
+    phone_number=forms.CharField(label='Phone Number', required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'autocomplete': 'off'
+            'autocomplete': 'off',
+            'placeholder': '9 digits numbers only: XXXXXXXXX'
         }
     ))
     password=forms.CharField(label='Password', required=True, widget=forms.TextInput(
@@ -24,10 +25,11 @@ class CreateAccountForm(forms.Form):
     ))
 
 class SignInForm(forms.Form):
-    email=forms.EmailField(label='Email', required=True, widget=forms.EmailInput(
+    phone_number=forms.CharField(label='Phone Number', required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'autocomplete': 'off'
+            'autocomplete': 'off',
+            'placeholder': '9 digits numbers only: XXXXXXXXX'
         }
     ))
     password=forms.CharField(label='Password', required=True, widget=forms.TextInput(

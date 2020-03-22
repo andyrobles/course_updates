@@ -76,4 +76,10 @@
 		</tbody>	
 	</table>
 </div>
+{% if not course_list %}
+<div style="height: 100px;"></div>
+<div class="d-flex justify-content-center">
+	<p>There are no courses currently on your watch list. Click <strong>Add Course</strong> to begin.</p>
+</div>
+{% endif %}
 {% endblock %}

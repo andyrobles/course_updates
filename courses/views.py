@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from .forms import CreateAccountForm, SignInForm, AddCourseForm, RemoveCourseForm
-from watcher.vcccd import CourseSnapshot
+from courses.vcccd import CourseSnapshot
 from .models import Course
 
 def require_sign_in(view_function):
@@ -15,11 +15,11 @@ def require_sign_in(view_function):
 	return wrapped_view_function
 
 def landing(request):
-	return render(request, 'watcher/landing.html')
+	return render(request, 'courses/landing.html')
 
 @require_sign_in
 def index(request):
-	return render(request, 'watcher/index.html', {'course_list': Course.objects.filter(user=request.user)})
+	return render(request, 'courses/index.html', {'course_list': Course.objects.filter(user=request.user)})
 
 def create_account(request):
 	if request.method == 'POST':
@@ -29,7 +29,7 @@ def create_account(request):
 		if create_account_form.is_valid() and is_valid_phone_number(create_account_form.cleaned_data['phone_number']):
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
-				return render(request, 'watcher/landing_modal.html', {
+				return render(request, 'courses/landing_modal.html', {
 					'modal_title': 'Try Again',
 					'icon': 'exclamation-triangle',
 					'message': 'Password and Confirm password fields do not match'
@@ -49,14 +49,14 @@ def create_account(request):
 			
 		
 		# Return error message if invalid form
-		return render(request, 'watcher/landing_modal.html', {
+		return render(request, 'courses/landing_modal.html', {
 			'modal_title': 'Try Again',
 			'icon': 'exclamation-triangle',
 			'message': 'Form contained one or more invalid fields'
 		})
 
 	# Render create account form if a get request		
-	return render(request, 'watcher/landing_modal.html', {
+	return render(request, 'courses/landing_modal.html', {
 		'form': CreateAccountForm(),
 		'icon': 'user-plus',
 		'modal_title': 'Create Account'
@@ -82,21 +82,21 @@ def sign_in(request):
 				return redirect('index')
 
 			# Return an invalid login error message
-			return render(request, 'watcher/landing_modal.html', {
+			return render(request, 'courses/landing_modal.html', {
 				'icon': 'exclamation-triangle',
 				'modal_title': 'Try Again',
 				'message': 'Username or password were incorrect'
 			})
 		else:
 			# Tell user to try again if form was invalid
-			return render(request, 'watcher/landing_modal.html', {
+			return render(request, 'courses/landing_modal.html', {
 				'icon': 'exclamation-triangle',
 				'modal_title': 'Try Again',
 				'message': 'Form contained one or more invalid fields'
 			})
 
 	# Provide user a blank sign in form
-	return render(request, 'watcher/landing_modal.html', {
+	return render(request, 'courses/landing_modal.html', {
 		'form': SignInForm(),
 		'icon': 'sign-in-alt',
 		'modal_title': 'Sign In'
@@ -120,7 +120,7 @@ def add_course(request):
 			identical_courses = Course.objects.filter(user=request.user, crn=course_snapshot.crn)
 
 			if len(identical_courses) >= 1:
-				return render(request, 'watcher/index_modal.html', {
+				return render(request, 'courses/index_modal.html', {
 					'course_list': Course.objects.filter(user=request.user),
 					'modal_title': 'Duplicate Course',
 					'icon': 'exclamation-triangle',
@@ -145,7 +145,7 @@ def add_course(request):
 			
 		else:
 			# Return error message if invalid form
-			return render(request, 'watcher/index_modal.html', {
+			return render(request, 'courses/index_modal.html', {
 				'course_list': Course.objects.filter(user=request.user),
 				'modal_title': 'Try Again',
 				'icon': 'exclamation-triangle',
@@ -153,7 +153,7 @@ def add_course(request):
 			})
 
 	# Render create course form if a get request
-	return render(request, 'watcher/index_modal.html', {
+	return render(request, 'courses/index_modal.html', {
 		'course_list': Course.objects.filter(user=request.user),
 		'form': AddCourseForm(),
 		'icon': 'graduation-cap',
@@ -175,7 +175,7 @@ def remove_course(request):
 			return redirect('index')
 
 		# Return error form when form is invalid
-		return render(request, 'watcher/index_modal.html', {
+		return render(request, 'courses/index_modal.html', {
 			'course_list': Course.objects.filter(user=request.user),
 			'icon': 'exclamation-triangle',
 			'modal_title': 'Try Again',
@@ -186,7 +186,7 @@ def remove_course(request):
 	remove_course_form.fields['course'].queryset=Course.objects.filter(user=request.user)
 			
 	# Return blank remove coures form when request method is get
-	return render(request, 'watcher/index_modal.html', {
+	return render(request, 'courses/index_modal.html', {
 		'course_list': Course.objects.filter(user=request.user),
 		'form': remove_course_form,
 		'icon': 'trash',

@@ -1,23 +1,18 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from django.contrib.auth.decorators import login_required
+
 from .forms import AddCourseForm, RemoveCourseForm
 from .models import Course
 
 from courses.vcccd import CourseSnapshot
 
-def require_sign_in(view_function):
-	def wrapped_view_function(request):
-		if not request.user.is_authenticated:
-			return redirect(reverse('accounts:index'))
-		return view_function(request)
-	return wrapped_view_function
-
-@require_sign_in
+@login_required
 def index(request):
 	return render(request, 'courses/index.html', {'course_list': Course.objects.filter(user=request.user)})
 
-@require_sign_in
+@login_required
 def add_course(request):
 	if request.method == 'POST':
 		# Get submitted course form
@@ -72,6 +67,7 @@ def add_course(request):
 		'subject': 'Add Course'
 	})
 
+@login_required
 def remove_course(request):
 	if request.method == 'POST':
 		# Get submitted form form user when request method is post

@@ -27,7 +27,9 @@ def add_course(request):
 			identical_courses = Course.objects.filter(user=request.user, crn=course_snapshot.crn)
 
 			if len(identical_courses) >= 1:
-				return render(request, 'courses/dialogue.html', {
+				return render(request, 'popups/dialogue.html', {
+					'close_url': reverse('courses:index'),
+					'background_template': 'courses/index.html',
 					'course_list': Course.objects.filter(user=request.user),
 					'subject': 'Duplicate Course',
 					'icon': 'exclamation-triangle',
@@ -52,7 +54,9 @@ def add_course(request):
 			
 		else:
 			# Return error message if invalid form
-			return render(request, 'courses/dialogue.html', {
+			return render(request, 'popups/dialogue.html', {
+				'close_url': reverse('courses:index'),
+				'background_template': 'courses/index.html',
 				'course_list': Course.objects.filter(user=request.user),
 				'subject': 'Try Again',
 				'icon': 'exclamation-triangle',
@@ -60,7 +64,9 @@ def add_course(request):
 			})
 
 	# Render create course form if a get request
-	return render(request, 'courses/dialogue.html', {
+	return render(request, 'popups/dialogue.html', {
+		'close_url': reverse('courses:index'),
+		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),
 		'form': AddCourseForm(),
 		'icon': 'graduation-cap',
@@ -83,7 +89,9 @@ def remove_course(request):
 			return redirect(reverse('courses:index'))
 
 		# Return error form when form is invalid
-		return render(request, 'courses/dialogue.html', {
+		return render(request, 'popups/dialogue.html', {
+			'close_url': reverse('courses:index'),
+			'background_template': 'courses/index.html',
 			'course_list': Course.objects.filter(user=request.user),
 			'icon': 'exclamation-triangle',
 			'subject': 'Try Again',
@@ -94,7 +102,9 @@ def remove_course(request):
 	remove_course_form.fields['course'].queryset=Course.objects.filter(user=request.user)
 			
 	# Return blank remove coures form when request method is get
-	return render(request, 'courses/dialogue.html', {
+	return render(request, 'popups/dialogue.html', {
+		'close_url': reverse('courses:index'),
+		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),
 		'form': remove_course_form,
 		'icon': 'trash',

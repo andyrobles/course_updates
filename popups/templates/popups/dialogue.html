@@ -1,3 +1,5 @@
+{% extends background_template %}
+{% block modal %}
 <div class="modal" data-backdrop="static" id="modalWindow" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -36,3 +38,4 @@
 <script>
 $('#modalWindow').modal('show')
 </script>
+{% endblock %}

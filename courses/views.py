@@ -27,7 +27,7 @@ def add_course(request):
 			identical_courses = Course.objects.filter(user=request.user, crn=course_snapshot.crn)
 
 			if len(identical_courses) >= 1:
-				return render(request, 'popups/dialogue.html', {
+				return render(request, 'components/dialogue.html', {
 					'close_url': reverse('courses:index'),
 					'background_template': 'courses/index.html',
 					'course_list': Course.objects.filter(user=request.user),
@@ -54,7 +54,7 @@ def add_course(request):
 			
 		else:
 			# Return error message if invalid form
-			return render(request, 'popups/dialogue.html', {
+			return render(request, 'components/dialogue.html', {
 				'close_url': reverse('courses:index'),
 				'background_template': 'courses/index.html',
 				'course_list': Course.objects.filter(user=request.user),
@@ -64,7 +64,7 @@ def add_course(request):
 			})
 
 	# Render create course form if a get request
-	return render(request, 'popups/dialogue.html', {
+	return render(request, 'components/dialogue.html', {
 		'close_url': reverse('courses:index'),
 		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),
@@ -89,7 +89,7 @@ def remove_course(request):
 			return redirect(reverse('courses:index'))
 
 		# Return error form when form is invalid
-		return render(request, 'popups/dialogue.html', {
+		return render(request, 'components/dialogue.html', {
 			'close_url': reverse('courses:index'),
 			'background_template': 'courses/index.html',
 			'course_list': Course.objects.filter(user=request.user),
@@ -102,7 +102,7 @@ def remove_course(request):
 	remove_course_form.fields['course'].queryset=Course.objects.filter(user=request.user)
 			
 	# Return blank remove coures form when request method is get
-	return render(request, 'popups/dialogue.html', {
+	return render(request, 'components/dialogue.html', {
 		'close_url': reverse('courses:index'),
 		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),

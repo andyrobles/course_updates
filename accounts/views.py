@@ -17,7 +17,7 @@ def create_account(request):
 		if create_account_form.is_valid() and is_valid_phone_number(create_account_form.cleaned_data['phone_number']):
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
-				return render(request, 'popups/dialogue.html', {
+				return render(request, 'components/dialogue.html', {
 					'close_url': reverse('accounts:index'),
 					'background_template': 'accounts/index.html',
 					'subject': 'Try Again',
@@ -38,7 +38,7 @@ def create_account(request):
 			return redirect(reverse('courses:index'))
 		
 		# Return error message if invalid form
-		return render(request, 'popups/dialogue.html', {
+		return render(request, 'components/dialogue.html', {
 			'close_url': reverse('accounts:index'),
 			'background_template': 'accounts/index.html',
 			'subject': 'Try Again',
@@ -47,7 +47,7 @@ def create_account(request):
 		})
 
 	# Render create account form if a get request		
-	return render(request, 'popups/dialogue.html', {
+	return render(request, 'components/dialogue.html', {
 		'close_url': reverse('accounts:index'),
 		'background_template': 'accounts/index.html',
 		'form': CreateAccountForm(),
@@ -75,7 +75,7 @@ def sign_in(request):
 				return redirect(reverse('courses:index'))
 
 			# Return an invalid login error message
-			return render(request, 'popups/dialogue.html', {
+			return render(request, 'components/dialogue.html', {
 				'close_url': reverse('accounts:index'),
 				'background_template': 'accounts/index.html',
 				'icon': 'exclamation-triangle',
@@ -84,7 +84,7 @@ def sign_in(request):
 			})
 		else:
 			# Tell user to try again if form was invalid
-			return render(request, 'popups/dialogue.html', {
+			return render(request, 'components/dialogue.html', {
 				'close_url': reverse('accounts:index'),
 				'background_template': 'accounts/index.html',
 				'icon': 'exclamation-triangle',
@@ -93,7 +93,7 @@ def sign_in(request):
 			})
 
 	# Provide user a blank sign in form
-	return render(request, 'popups/dialogue.html', {
+	return render(request, 'components/dialogue.html', {
 		'close_url': reverse('accounts:index'),
 		'background_template': 'accounts/index.html',
 		'form': SignInForm(),

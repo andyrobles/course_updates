@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'loops.apps.LoopsConfig',
-    'popups.apps.PopupsConfig',
+    'components.apps.ComponentsConfig',
     'accounts.apps.AccountsConfig',
 	'courses.apps.CoursesConfig',
     'django.contrib.admin',
@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "accounts/static"),
-    os.path.join(BASE_DIR, "popups/static")
+    os.path.join(BASE_DIR, "components/static")
 ]
 
 # Authentication

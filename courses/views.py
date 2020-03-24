@@ -6,7 +6,10 @@ from django.contrib.auth.decorators import login_required
 from .forms import AddCourseForm, RemoveCourseForm
 from .models import Course
 
-from courses.vcccd import CourseSnapshot
+from courses.utilities import CourseSnapshot, FunctionLoop
+
+function_loop = FunctionLoop()
+function_loop.execute()
 
 @login_required
 def index(request):

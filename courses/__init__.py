@@ -1,1 +1,1 @@
-from .vcccd import CourseSnapshot
+from .utilities import CourseSnapshot, FunctionLoop

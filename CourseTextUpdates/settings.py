@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'loops.apps.LoopsConfig',
     'popups.apps.PopupsConfig',
     'accounts.apps.AccountsConfig',
 	'courses.apps.CoursesConfig',

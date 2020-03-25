@@ -61,9 +61,12 @@ class CourseSnapshot:
     @property
     def _get_instructor(self):
         if self._is_distance_education_class():
-    	    return  self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[9].get_text()
+            return self._parse_scraped_data(2, 3, 9)
         else:
-            return self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[16].get_text()
+            return self._parse_scraped_data(2, 3, 16)
+
+    def _parse_scraped_data(self, table_index, tr_index, td_index):
+        return self.course_search_results_soup.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
 
     @property
     def _get_meeting_time(self):
@@ -72,7 +75,7 @@ class CourseSnapshot:
         return '{} {}'.format(self._weekdays, self._time_span)
 
     def _weekday(self, index):
-        weekday = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[4 + index].get_text()
+        weekday = self._parse_scraped_data(2, 3, 4 + index)
         return weekday
 
     def _is_distance_education_class(self):
@@ -96,20 +99,20 @@ class CourseSnapshot:
 
     @property
     def _time_span(self):
-        time = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[11].get_text()
+        time = self._parse_scraped_data(2, 3, 11)
         return time
 
     @property
     def _get_location(self):
         if self._is_distance_education_class():
-            location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[5].get_text()
+            location = self._parse_scraped_data(2, 3, 5)
         else:
-            location = self.course_search_results_soup.find_all('table')[2].find_all('tr')[3].find_all('td')[12].get_text()
+            location = self._parse_scraped_data(2, 3, 12)
         return location.strip()
 
     @property
     def _get_status(self):
-        status = self.course_search_results_soup.findAll('table')[2].findAll('tr')[3].find_all('td')[0].get_text()
+        status = self._parse_scraped_data(2, 3, 0)
         return status
 
     @property

@@ -1,5 +1,5 @@
 import unittest
-from course import CourseSnapshot 
+from course import CourseSnapshot, CourseSearch
 
 EXPECTED_COURSE_ATTRIBUTES = [
     {
@@ -24,7 +24,7 @@ EXPECTED_COURSE_ATTRIBUTES = [
     }
 ]
 
-class TestCourseAttributes(unittest.TestCase):
+class TestCourseSnapshot(unittest.TestCase):
     def setUp(self):
         self.course_list = [CourseSnapshot(int(course_details['crn'])) for course_details in EXPECTED_COURSE_ATTRIBUTES]
         self.actual_and_expected = zip(self.course_list, EXPECTED_COURSE_ATTRIBUTES)
@@ -39,6 +39,29 @@ class TestCourseAttributes(unittest.TestCase):
             self.assertEqual(current_pair[0].status, current_pair[1]['status'])
             self.assertEqual(current_pair[0].seating_availability, current_pair[1]['seating_availability'])
             self.assertEqual(current_pair[0].waitlist_availability, current_pair[1]['waitlist_availability'])
+
+
+class TestCourseSearch(unittest.TestCase):
+    def setUp(self):
+        self.course_search = CourseSearch()
+
+    def test_ab_r001_crn_71941_is_0th_index(self):
+        self.assertEqual(0, self.course_search.find_index(71941))
+
+    def test_ab_r003_crn_72024_is_1st_index(self):
+        self.assertEqual(1, self.course_search.find_index(72024))
+
+    def test_ac_r010_crn_71299_is_4th_index(self):
+        self.assertEqual(4, self.course_search.find_index(71299))
+
+    def test_ac_r010l_crn_71452_is_5th_index(self):
+        self.assertEqual(4, self.course_search.find_index(71452))
+
+    def test_acct_m01_crn_70571_is_11th_index(self):
+        self.assertEqual(11, self.course_search.find_index(70571))
+
+    def test_acct_m01_crn_71289_is_12th_index(self):
+        self.assertEqual(12, self.course_search.find_index(71289))
 
 if __name__ == '__main__':
     unittest.main()

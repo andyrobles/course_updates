@@ -1,6 +1,25 @@
 from bs4 import BeautifulSoup
 import urllib.request
 
+class CourseSearch:
+    """
+    Purpose is to find course index which allows to later retrieve the a course in O(1) time.
+    """
+    def __init__(self):
+        """
+        Scrapes course data from VCCCD system and stores it in the class.
+        """
+        pass
+
+    def find_index(self, crn):
+        """
+        Searches scraped data to find the course and stores the index.
+
+        Parameters:
+            crn : The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
+        """
+        pass
+
 class CourseSnapshot:
     def __init__(self, crn):
         self._crn = crn

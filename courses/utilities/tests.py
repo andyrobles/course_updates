@@ -1,5 +1,5 @@
 import unittest
-from course import CourseSnapshot, CourseSearch
+from course import CourseSnapshot, CourseSearcher
 
 EXPECTED_COURSE_ATTRIBUTES = [
     {
@@ -38,9 +38,9 @@ class TestCourseSnapshot(unittest.TestCase):
             self.assertEqual(current_pair[0].seating_availability, current_pair[1]['seating_availability'])
 
 
-class TestCourseSearch(unittest.TestCase):
+class TestCourseSearcher(unittest.TestCase):
     def setUp(self):
-        self.course_search = CourseSearch()
+        self.course_search = CourseSearcher()
 
     def test_ab_r001_crn_71941_is_0th_index(self):
         self.assertEqual(0, self.course_search.find_index(71941))

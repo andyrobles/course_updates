@@ -39,7 +39,7 @@ class CourseParser:
         course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
     """
     def __init__(self, course_results_page, course_details_page):
-
+        pass
 
 class CourseSnapshot:
     def __init__(self, crn):

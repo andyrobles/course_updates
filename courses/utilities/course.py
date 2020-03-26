@@ -2,13 +2,11 @@ from bs4 import BeautifulSoup
 import urllib.request
 
 class CourseSearcher:
-    """
-    Purpose is to find course index which allows to later retrieve the a course in O(1) time.
-    """
+    """Purpose is to find course index which allows to later retrieve the a course in O(1) time."""
+
     def __init__(self):
-        """
-        Scrapes course data from VCCCD system and stores it in the class.
-        """
+        """Scrapes course data from VCCCD system and stores it in the class."""
+
         pass
 
     def find_index(self, crn):
@@ -21,13 +19,13 @@ class CourseSearcher:
         pass
 
 class CourseScraper:
-    """
-    Scrapes course data from VCCCD System and stores it in the class
+    """Scrapes course data from VCCCD System and stores it in the class"""
 
-    Parameters:
-        crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
-    """
     def __init__(self, crn):
+        """
+        Parameters:
+            crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
+        """
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()
         self.course_details_soup = self.get_course_details_soup()
@@ -59,14 +57,14 @@ class CourseScraper:
         return BeautifulSoup(plain_html, 'html.parser')
 
 class CourseParser:
-    """
-    Parses course data and converts it to python variables
+    """Parses course data and converts it to python variables"""
 
-    Parameters:
-        course_results_page (str): Raw scraped data of page that comes after course search submit.
-        course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
-    """
     def __init__(self, crn, course_results_page, course_details_page):
+        """
+        Parameters:
+            course_results_page (str): Raw scraped data of page that comes after course search submit.
+            course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
+        """
         self._crn = crn
         self.course_search_results_soup = course_results_page
         self.course_details_soup = course_details_page 
@@ -77,14 +75,13 @@ class CourseParser:
 
     def _parse_course_attributes(self):
         return {
-            'crn': str(self._crn), 
+            'crn': self._parse_course_search_results(2, 3, 1).strip(), 
             'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
             'instructor': self._parse_course_search_results(2, 3, 9) if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 16),
             'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
             'location': self._parse_course_search_results(2, 3, 5).strip() if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 12).strip(),
             'status': self._parse_course_search_results(2, 3, 0),
             'seating_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 2), self._parse_course_details(2, 2, 0)),
-            'waitlist_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 5), self._parse_course_details(2, 2, 3)),
         }
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):

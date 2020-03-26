@@ -28,7 +28,35 @@ class CourseScraper:
         crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
     """
     def __init__(self, crn):
-        pass
+        self._crn = crn
+        self.course_search_results_soup = self.get_course_search_results_soup()
+        self.course_details_soup = self.get_course_details_soup()
+
+    @property
+    def scraped_data(self):
+        return self.course_search_results_soup, self.course_details_soup
+
+    def get_course_search_results_html(self):
+        crn = str(self._crn) 
+        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_listthislist'
+        url_values = 'TERM=202007&TERM_DESC=Fall+2020&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_camp=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_subj=%25&sel_crse=&sel_crn=' + crn + '&sel_title=&sel_ptrm=%25&sel_camp=%25&sel_instr=%25&begin_hh=5&begin_mi=0&begin_ap=a&end_hh=11&end_mi=0&end_ap=p&sel_new1=&aa=N&bb=N&dd=N&ee=N&ff=N&ztc=N'
+        full_url = url + '?' + url_values
+        html_doc = urllib.request.urlopen(full_url).read()
+        return html_doc	
+
+    def get_course_search_results_soup(self):
+        plain_html = self.get_course_search_results_html()
+        course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
+        return course_search_results_soup
+
+    def get_course_details_html(self):
+        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_course_popup?vsub=CS&vcrse=M10P&vterm=202007&vcrn={}'.format(str(self._crn))
+        html_doc = urllib.request.urlopen(url).read()
+        return html_doc
+
+    def get_course_details_soup(self):
+        plain_html = self.get_course_details_html()
+        return BeautifulSoup(plain_html, 'html.parser')
 
 class CourseParser:
     """
@@ -39,13 +67,25 @@ class CourseParser:
         course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
     """
     def __init__(self, course_results_page, course_details_page):
-        pass
+        self.course_search_results_soup = course_results_page
+        self.course_details_soup = course_results_page
+
+    def _parse_course_attributes(self):
+        return {
+            'crn': str(self._crn), 
+            'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
+            'instructor': self._parse_course_search_results(2, 3, 9) if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 16),
+            'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
+            'location': self._parse_course_search_results(2, 3, 5).strip() if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 12).strip(),
+            'status': self._parse_course_search_results(2, 3, 0),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 2), self._parse_course_details(2, 2, 0)),
+            'waitlist_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 5), self._parse_course_details(2, 2, 3)),
+        }
 
 class CourseSnapshot:
     def __init__(self, crn):
         self._crn = crn
-        self.course_search_results_soup = self.get_course_search_results_soup()
-        self.course_details_soup = self.get_course_details_soup()
+        self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
         self._course_attributes = self._parse_course_attributes() 
 
     def _parse_course_attributes(self):
@@ -128,26 +168,3 @@ class CourseSnapshot:
     def _time_span(self):
         time = self._parse_course_search_results(2, 3, 11)
         return time
-
-    def get_course_search_results_html(self):
-        crn = str(self._crn) 
-        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_listthislist'
-        url_values = 'TERM=202007&TERM_DESC=Fall+2020&sel_subj=dummy&sel_day=dummy&sel_schd=dummy&sel_camp=dummy&sel_sess=dummy&sel_instr=dummy&sel_ptrm=dummy&sel_subj=%25&sel_crse=&sel_crn=' + crn + '&sel_title=&sel_ptrm=%25&sel_camp=%25&sel_instr=%25&begin_hh=5&begin_mi=0&begin_ap=a&end_hh=11&end_mi=0&end_ap=p&sel_new1=&aa=N&bb=N&dd=N&ee=N&ff=N&ztc=N'
-        full_url = url + '?' + url_values
-        html_doc = urllib.request.urlopen(full_url).read()
-        return html_doc	
-
-    def get_course_search_results_soup(self):
-        plain_html = self.get_course_search_results_html()
-        course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
-        return course_search_results_soup
-
-    def get_course_details_html(self):
-        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_course_popup?vsub=CS&vcrse=M10P&vterm=202007&vcrn={}'.format(str(self._crn))
-        html_doc = urllib.request.urlopen(url).read()
-        return html_doc
-
-    def get_course_details_soup(self):
-        plain_html = self.get_course_details_html()
-        return BeautifulSoup(plain_html, 'html.parser')
-    

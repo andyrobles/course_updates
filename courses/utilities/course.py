@@ -66,9 +66,14 @@ class CourseParser:
         course_results_page (str): Raw scraped data of page that comes after course search submit.
         course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
     """
-    def __init__(self, course_results_page, course_details_page):
+    def __init__(self, crn, course_results_page, course_details_page):
+        self._crn = crn
         self.course_search_results_soup = course_results_page
-        self.course_details_soup = course_results_page
+        self.course_details_soup = course_details_page 
+
+    @property
+    def course_attributes(self):
+        return self._parse_course_attributes()
 
     def _parse_course_attributes(self):
         return {
@@ -81,24 +86,49 @@ class CourseParser:
             'seating_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 2), self._parse_course_details(2, 2, 0)),
             'waitlist_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 5), self._parse_course_details(2, 2, 3)),
         }
+    
+    def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
+        return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
+
+    def _parse_course_search_results(self, table_index, tr_index, td_index):
+        return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
+
+    def _parse_course_details(self, table_index, tr_index, td_index):
+        return self._parse_scraped_data(self.course_details_soup, table_index, tr_index, td_index)
+
+    def _weekday(self, index):
+        weekday = self._parse_course_search_results(2, 3, 4 + index)
+        return weekday
+
+    @property
+    def _weekdays(self):
+        substring = ''
+        num_weeks = 0
+        for i in range(7):
+            current_weekday = self._weekday(i)
+            if current_weekday in ['M', 'T', 'W', 'R', 'F', 'S']:
+                num_weeks += 1
+                if num_weeks == 1:
+                    substring = current_weekday
+                else:
+                    substring = '{}, {}'.format(substring, current_weekday)
+        
+        return substring
+
+    @property
+    def _time_span(self):
+        time = self._parse_course_search_results(2, 3, 11)
+        return time
+    
+    def _is_distance_education_class(self):
+        # There are fewer cells in location meeting time column when an online course
+        return len(self._weekday(0)) > 5 
 
 class CourseSnapshot:
     def __init__(self, crn):
         self._crn = crn
         self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
-        self._course_attributes = self._parse_course_attributes() 
-
-    def _parse_course_attributes(self):
-        return {
-            'crn': str(self._crn), 
-            'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
-            'instructor': self._parse_course_search_results(2, 3, 9) if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 16),
-            'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
-            'location': self._parse_course_search_results(2, 3, 5).strip() if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 12).strip(),
-            'status': self._parse_course_search_results(2, 3, 0),
-            'seating_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 2), self._parse_course_details(2, 2, 0)),
-            'waitlist_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 5), self._parse_course_details(2, 2, 3)),
-        }
+        self._course_attributes = CourseParser(self._crn, self.course_search_results_soup, self.course_details_soup).course_attributes
 
     @property
     def crn(self):
@@ -131,40 +161,3 @@ class CourseSnapshot:
     @property
     def waitlist_availability(self):
         return self._course_attributes['waitlist_availability']
-
-    def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
-        return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
-
-    def _parse_course_search_results(self, table_index, tr_index, td_index):
-        return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
-
-    def _parse_course_details(self, table_index, tr_index, td_index):
-        return self._parse_scraped_data(self.course_details_soup, table_index, tr_index, td_index)
-
-    def _weekday(self, index):
-        weekday = self._parse_course_search_results(2, 3, 4 + index)
-        return weekday
-
-    def _is_distance_education_class(self):
-        # There are fewer cells in location meeting time column when an online course
-        return len(self._weekday(0)) > 5 
-
-    @property
-    def _weekdays(self):
-        substring = ''
-        num_weeks = 0
-        for i in range(7):
-            current_weekday = self._weekday(i)
-            if current_weekday in ['M', 'T', 'W', 'R', 'F', 'S']:
-                num_weeks += 1
-                if num_weeks == 1:
-                    substring = current_weekday
-                else:
-                    substring = '{}, {}'.format(substring, current_weekday)
-        
-        return substring
-
-    @property
-    def _time_span(self):
-        time = self._parse_course_search_results(2, 3, 11)
-        return time

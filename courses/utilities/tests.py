@@ -10,7 +10,6 @@ EXPECTED_COURSE_ATTRIBUTES = [
         'location': 'Moorpark Life Sci/Math/Comp 138', 
         'status': 'OPEN',
         'seating_availability': '35 out of 35 spots open',
-        'waitlist_availability': '5 out of 5 spots open' 
     },
     {
         'crn': '73039',
@@ -20,7 +19,6 @@ EXPECTED_COURSE_ATTRIBUTES = [
         'location': 'Moorpark Online/Internet',
         'status': 'OPEN',
         'seating_availability': '55 out of 55 spots open',
-        'waitlist_availability': '5 out of 5 spots open'
     }
 ]
 
@@ -38,7 +36,6 @@ class TestCourseSnapshot(unittest.TestCase):
             self.assertEqual(current_pair[0].location, current_pair[1]['location'])
             self.assertEqual(current_pair[0].status, current_pair[1]['status'])
             self.assertEqual(current_pair[0].seating_availability, current_pair[1]['seating_availability'])
-            self.assertEqual(current_pair[0].waitlist_availability, current_pair[1]['waitlist_availability'])
 
 
 class TestCourseSearch(unittest.TestCase):

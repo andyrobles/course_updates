@@ -48,7 +48,6 @@ def add_course(request):
 				location=course_snapshot.location,
 				status=course_snapshot.status,
 				seating_availability=course_snapshot.seating_availability,
-				waitlist_availability=course_snapshot.waitlist_availability
 			)
 
 			course.save()

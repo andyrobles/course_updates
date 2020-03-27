@@ -79,18 +79,21 @@ class CourseParser:
 
     def _parse_course_attributes(self):
         if self._is_distance_education_class():
-            seating_availability = '{} out of {} spots open'.format(self._parse_course_search_results(2, 3, 8), self._parse_course_search_results(2, 3, 6))
+            seating_availability = '{} out of {} spots open'.format(self._parse_course_row(0, 8), self._parse_course_row(0, 6))
         else:
-            seating_availability = '{} out of {} spots open'.format(self._parse_course_search_results(2, 3, 15), self._parse_course_search_results(2, 3, 13))
+            seating_availability = '{} out of {} spots open'.format(self._parse_course_row(0, 15), self._parse_course_row(0, 13))
         return {
-            'crn': self._parse_course_search_results(2, 3, 1).strip(), 
+            'crn': self._parse_course_row(0, 1).strip(), 
             'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
-            'instructor': self._parse_course_search_results(2, 3, 9) if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 16),
+            'instructor': self._parse_course_row(0, 9) if self._is_distance_education_class() else self._parse_course_row(0, 16),
             'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
-            'location': self._parse_course_search_results(2, 3, 5).strip() if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 12).strip(),
-            'status': self._parse_course_search_results(2, 3, 0),
+            'location': self._parse_course_row(0, 5).strip() if self._is_distance_education_class() else self._parse_course_row(0, 12).strip(),
+            'status': self._parse_course_row(0, 0),
             'seating_availability': seating_availability
         }
+
+    def _parse_course_row(self, course_index, column_index):
+        return self._parse_course_search_results(2, 3, column_index)
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
         return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
@@ -132,7 +135,7 @@ class CourseParser:
 class CourseSnapshot:
     def __init__(self, crn):
         self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
-        self._course_attributes = CourseParser(self.course_search_results_soup).get_course_attributes(1)
+        self._course_attributes = CourseParser(self.course_search_results_soup).get_course_attributes(0)
 
     @property
     def crn(self):

@@ -67,8 +67,14 @@ class CourseParser:
         """
         self.course_search_results_soup = course_results_page
 
-    @property
-    def course_attributes(self):
+    def get_course_attributes(self, index):
+        """
+        Parameters:
+            index (int): A number specifying which course to return with respect to its order on the course results page.
+
+        Returns:
+            dict: course attributes as keys and parsed info as values.
+        """
         return self._parse_course_attributes()
 
     def _parse_course_attributes(self):
@@ -126,7 +132,7 @@ class CourseParser:
 class CourseSnapshot:
     def __init__(self, crn):
         self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
-        self._course_attributes = CourseParser(self.course_search_results_soup).course_attributes
+        self._course_attributes = CourseParser(self.course_search_results_soup).get_course_attributes(1)
 
     @property
     def crn(self):

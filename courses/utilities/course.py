@@ -59,15 +59,13 @@ class CourseScraper:
 class CourseParser:
     """Parses course data and converts it to python variables"""
 
-    def __init__(self, crn, course_results_page, course_details_page):
+    def __init__(self, course_results_page):
         """
         Parameters:
             course_results_page (str): Raw scraped data of page that comes after course search submit.
             course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
         """
-        self._crn = crn
         self.course_search_results_soup = course_results_page
-        self.course_details_soup = course_details_page 
 
     @property
     def course_attributes(self):
@@ -93,6 +91,9 @@ class CourseParser:
 
     def _parse_course_search_results(self, table_index, tr_index, td_index):
         return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
+
+    def _parse_course_details(self, table_index, tr_index, td_index):
+        return self._parse_scraped_data(self.course_details_soup, table_index, tr_index, td_index)
 
     def _weekday(self, index):
         weekday = self._parse_course_search_results(2, 3, 4 + index)
@@ -124,9 +125,8 @@ class CourseParser:
 
 class CourseSnapshot:
     def __init__(self, crn):
-        self._crn = crn
         self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
-        self._course_attributes = CourseParser(self._crn, self.course_search_results_soup, self.course_details_soup).course_attributes
+        self._course_attributes = CourseParser(self.course_search_results_soup).course_attributes
 
     @property
     def crn(self):

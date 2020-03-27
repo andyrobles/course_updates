@@ -74,6 +74,10 @@ class CourseParser:
         return self._parse_course_attributes()
 
     def _parse_course_attributes(self):
+        if self._is_distance_education_class():
+            seating_availability = '{} out of {} spots open'.format(self._parse_course_search_results(2, 3, 8), self._parse_course_search_results(2, 3, 6))
+        else:
+            seating_availability = '{} out of {} spots open'.format(self._parse_course_search_results(2, 3, 15), self._parse_course_search_results(2, 3, 13))
         return {
             'crn': self._parse_course_search_results(2, 3, 1).strip(), 
             'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
@@ -81,7 +85,7 @@ class CourseParser:
             'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
             'location': self._parse_course_search_results(2, 3, 5).strip() if self._is_distance_education_class() else self._parse_course_search_results(2, 3, 12).strip(),
             'status': self._parse_course_search_results(2, 3, 0),
-            'seating_availability': '{} out of {} spots open'.format(self._parse_course_details(2, 2, 2), self._parse_course_details(2, 2, 0)),
+            'seating_availability': seating_availability
         }
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
@@ -89,9 +93,6 @@ class CourseParser:
 
     def _parse_course_search_results(self, table_index, tr_index, td_index):
         return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
-
-    def _parse_course_details(self, table_index, tr_index, td_index):
-        return self._parse_scraped_data(self.course_details_soup, table_index, tr_index, td_index)
 
     def _weekday(self, index):
         weekday = self._parse_course_search_results(2, 3, 4 + index)

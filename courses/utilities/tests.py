@@ -61,6 +61,12 @@ class TestCourseSearcher(unittest.TestCase):
     def test_1st_index(self):
         self.assertEqual(1, self.course_search.find_index(72024))
 
+    def test_2nd_index(self):
+        self.assertEqual(2, self.course_search.find_index(71925))
+
+    def test_3rd_index(self):
+        self.assertEqual(3, self.course_search.find_index(70547))
+
     def test_4th_index(self):
         self.assertEqual(4, self.course_search.find_index(71299))
 

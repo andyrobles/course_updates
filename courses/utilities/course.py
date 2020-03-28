@@ -17,8 +17,8 @@ class CourseSearcher:
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
-        for i in range(5):
-            print('find_index for loop iteration')
+        for i in range(20):
+            print('find_index for loop iteration {}'.format(i))
             course_attributes = self._parser.get_course_attributes(i)
             if str(crn) == course_attributes['crn']:
                 return i

@@ -7,7 +7,7 @@ class CourseSearcher:
     def __init__(self, course_search_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
         self.course_search_results_page = CourseScraper().scraped_data if not course_search_results_page else course_search_results_page
-        self._parser = CourseParser(course_search_results_page)
+        self._parser = CourseParser(course_search_results_page, self.clean_data, 1)
 
     def find_index(self, crn):
         """
@@ -17,11 +17,15 @@ class CourseSearcher:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
         for i in range(20):
-            course_attributes = self._parser.get_course_attributes(i)
-            if str(crn) == course_attributes['crn']:
+            course_index = self._parser.get_course_crn(i)
+            if crn == course_index:
                 return i
 
         return 1000
+
+    def clean_data(self, course_search_results_page):
+        for table_row in self.course_search_results_page.find_all('td', class_='crn_header'):
+            table_row.find_parent('tr').decompose()
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""
@@ -56,16 +60,19 @@ class CourseScraper:
 class CourseParser:
     """Parses course data and converts it to python variables"""
 
-    def __init__(self, course_search_results_page):
+    def __init__(self, course_search_results_page, custom_clean_data_function=None, removed_table_rows=0):
         """
         Parameters:
             course_search_results_page (str): Raw scraped data of page that comes after course search submit.
-            course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
+            custom_clean_data_function (function): Function that takes a course_results_page as an argument and cleans it.
         """
+        self._index = 0
         self.course_search_results_page = course_search_results_page
         self._clean_data()
-        self._index = 0
-
+        if custom_clean_data_function:
+            custom_clean_data_function(self.course_search_results_page)
+        self._removed_table_rows = removed_table_rows
+    
     def _clean_data(self):
         """
         Removes table rows that contain subject headers.
@@ -93,6 +100,18 @@ class CourseParser:
             course_attributes.update(self._standard_meeting_course_attributes)
 
         return course_attributes
+
+    def get_course_crn(self, index):
+        """
+        Parameters:
+            index (int): A number specifying which course to lookup with respect to its order on the course results page.
+
+        Returns:
+            int: The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
+        """
+        self._index = index
+        return int(self._parse_course_row(1).strip())
+
 
     @property
     def _standard_meeting_course_attributes(self):
@@ -139,7 +158,7 @@ class CourseParser:
         }
 
     def _parse_course_row(self, column_index):
-        return self._parse_course_search_results(2, 2 + self._index * 3, column_index)
+        return self._parse_course_search_results(2, (2 - self._removed_table_rows) + self._index * (3 - self._removed_table_rows), column_index)
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
         return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()

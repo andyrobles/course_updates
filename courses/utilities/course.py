@@ -6,8 +6,8 @@ class CourseSearcher:
 
     def __init__(self):
         """Scrapes course data from VCCCD system and stores it in the class."""
-
-        pass
+        course_results_page = CourseScraper().scraped_data
+        self._parser = CourseParser(course_results_page)
 
     def find_index(self, crn):
         """
@@ -16,16 +16,24 @@ class CourseSearcher:
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
-        pass
+        for i in range(50):
+            course_attributes = self._parser.get_course_attributes(i)
+            if str(crn) == course_attributes['crn']:
+                print(i)
+                return i
+
+        return 1000
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""
 
-    def __init__(self, crn):
+    def __init__(self, crn=None):
         """
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
+        if crn == None:
+            crn = ''
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()
         self.course_details_soup = self.get_course_details_soup()

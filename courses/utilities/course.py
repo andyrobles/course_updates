@@ -7,6 +7,7 @@ class CourseSearcher:
     def __init__(self, course_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
         self.course_results_page = CourseScraper().scraped_data if not course_results_page else course_results_page
+        self._clean_data()
         self._parser = CourseParser(course_results_page)
 
     def find_index(self, crn):
@@ -23,6 +24,16 @@ class CourseSearcher:
                 return i
 
         return 1000
+
+    def _clean_data(self):
+        """
+        Removes table rows that contain subject headers.
+        
+        Returns:
+            BeautifulSoup: Cleaned course results.
+        """
+        for table_row in self.course_results_page.find_all('td', class_='subject_header'):
+            table_row.find_parent('tr').decompose()
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""
@@ -129,7 +140,7 @@ class CourseParser:
         }
 
     def _parse_course_row(self, column_index):
-        return self._parse_course_search_results(2, 3 + self._index * 3, column_index)
+        return self._parse_course_search_results(2, 2 + self._index * 3, column_index)
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
         return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
@@ -138,7 +149,7 @@ class CourseParser:
         return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
 
     def _weekday(self, index):
-        weekday = self._parse_course_search_results(2, 3, 4 + index)
+        weekday = self._parse_course_row(4 + index)
         return weekday
 
     @property
@@ -158,7 +169,7 @@ class CourseParser:
 
     @property
     def _time_span(self):
-        time = self._parse_course_search_results(2, 3, 11)
+        time = self._parse_course_row(11)
         return time
     
     def _is_distance_education_course(self):

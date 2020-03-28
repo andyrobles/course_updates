@@ -55,28 +55,28 @@ class TestCourseSearcher(unittest.TestCase):
 
         return BeautifulSoup(raw_html, 'html.parser')
 
-    def test_0th_index(self):
+    def test_course_index_0(self):
         self.assertEqual(0, self.course_search.find_index(71941))
 
-    def test_1st_index(self):
+    def test_course_index_1(self):
         self.assertEqual(1, self.course_search.find_index(72024))
 
-    def test_2nd_index(self):
+    def test_course_index_2(self):
         self.assertEqual(2, self.course_search.find_index(71925))
 
-    def test_3rd_index(self):
+    def test_course_index_3(self):
         self.assertEqual(3, self.course_search.find_index(70547))
 
-    def test_4th_index(self):
+    def test_course_index_4(self):
         self.assertEqual(4, self.course_search.find_index(71299))
 
-    def test_5th_index(self):
+    def test_course_index_5(self):
         self.assertEqual(5, self.course_search.find_index(71452))
 
-    def test_11th_index(self):
+    def test_course_index_11(self):
         self.assertEqual(11, self.course_search.find_index(70571))
 
-    def test_12th_index(self):
+    def test_course_index_12(self):
         self.assertEqual(12, self.course_search.find_index(71289))
 
 if __name__ == '__main__':

@@ -4,11 +4,10 @@ import urllib.request
 class CourseSearcher:
     """Purpose is to find course index which allows to later retrieve the a course in O(1) time."""
 
-    def __init__(self, course_results_page=None):
+    def __init__(self, course_search_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
-        self.course_results_page = CourseScraper().scraped_data if not course_results_page else course_results_page
-        self._clean_data()
-        self._parser = CourseParser(course_results_page)
+        self.course_search_results_page = CourseScraper().scraped_data if not course_search_results_page else course_search_results_page
+        self._parser = CourseParser(course_search_results_page)
 
     def find_index(self, crn):
         """
@@ -18,22 +17,11 @@ class CourseSearcher:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
         for i in range(20):
-            print('find_index for loop iteration {}'.format(i))
             course_attributes = self._parser.get_course_attributes(i)
             if str(crn) == course_attributes['crn']:
                 return i
 
         return 1000
-
-    def _clean_data(self):
-        """
-        Removes table rows that contain subject headers.
-        
-        Returns:
-            BeautifulSoup: Cleaned course results.
-        """
-        for table_row in self.course_results_page.find_all('td', class_='subject_header'):
-            table_row.find_parent('tr').decompose()
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""
@@ -46,11 +34,11 @@ class CourseScraper:
         if crn == None:
             crn = ''
         self._crn = crn
-        self.course_search_results_soup = self.get_course_search_results_soup()
+        self.course_search_results_page = self.get_course_search_results_page()
 
     @property
     def scraped_data(self):
-        return self.course_search_results_soup
+        return self.course_search_results_page
 
     def get_course_search_results_html(self):
         crn = str(self._crn) 
@@ -60,22 +48,33 @@ class CourseScraper:
         html_doc = urllib.request.urlopen(full_url).read()
         return html_doc	
 
-    def get_course_search_results_soup(self):
+    def get_course_search_results_page(self):
         plain_html = self.get_course_search_results_html()
-        course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
-        return course_search_results_soup
+        course_search_results_page = BeautifulSoup(plain_html, 'html.parser')
+        return course_search_results_page
 
 class CourseParser:
     """Parses course data and converts it to python variables"""
 
-    def __init__(self, course_results_page):
+    def __init__(self, course_search_results_page):
         """
         Parameters:
-            course_results_page (str): Raw scraped data of page that comes after course search submit.
+            course_search_results_page (str): Raw scraped data of page that comes after course search submit.
             course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
         """
-        self.course_search_results_soup = course_results_page
+        self.course_search_results_page = course_search_results_page
+        self._clean_data()
         self._index = 0
+
+    def _clean_data(self):
+        """
+        Removes table rows that contain subject headers.
+        
+        Returns:
+            BeautifulSoup: Cleaned course results.
+        """
+        for table_row in self.course_search_results_page.find_all('td', class_='subject_header'):
+            table_row.find_parent('tr').decompose()
 
     def get_course_attributes(self, index):
         """
@@ -135,7 +134,7 @@ class CourseParser:
         """
         return {
             'crn': self._parse_course_row(1).strip(), 
-            'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
+            'title': self.course_search_results_page.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
             'status': self._parse_course_row(0),
         }
 
@@ -146,7 +145,7 @@ class CourseParser:
         return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()
 
     def _parse_course_search_results(self, table_index, tr_index, td_index):
-        return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
+        return self._parse_scraped_data(self.course_search_results_page, table_index, tr_index, td_index)
 
     def _weekday(self, index):
         weekday = self._parse_course_row(4 + index)
@@ -178,8 +177,8 @@ class CourseParser:
 
 class CourseSnapshot:
     def __init__(self, crn):
-        self.course_search_results_soup = CourseScraper(crn).scraped_data
-        self._course_attributes = CourseParser(self.course_search_results_soup).get_course_attributes(0)
+        self.course_search_results_page = CourseScraper(crn).scraped_data
+        self._course_attributes = CourseParser(self.course_search_results_page).get_course_attributes(0)
 
     @property
     def crn(self):

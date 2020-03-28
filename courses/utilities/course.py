@@ -65,6 +65,7 @@ class CourseParser:
             course_details_page (str): Raw scraped data of page that comes after clicking more info of course search result.
         """
         self.course_search_results_soup = course_results_page
+        self._index = 0
 
     def get_course_attributes(self, index):
         """
@@ -74,6 +75,7 @@ class CourseParser:
         Returns:
             dict: course attributes as keys and parsed info as values.
         """
+        self._index = index
         course_attributes = self._basic_course_attributes
 
         if self._is_distance_education_course():
@@ -92,10 +94,10 @@ class CourseParser:
             dict: course attributes as keys and parsed info as values.
         """
         return {
-            'instructor': self._parse_course_row(0, 16),
+            'instructor': self._parse_course_row(16),
             'meeting_time': '{} {}'.format(self._weekdays, self._time_span),
-            'location': self._parse_course_row(0, 12).strip(),
-            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(0, 15), self._parse_course_row(0, 13))
+            'location': self._parse_course_row(12).strip(),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(15), self._parse_course_row(13))
         }
 
     @property
@@ -107,10 +109,10 @@ class CourseParser:
             dict: course attributes as keys and parsed info as values.
         """
         return {
-            'instructor': self._parse_course_row(0, 9),
+            'instructor': self._parse_course_row(9),
             'meeting_time': 'Distance Education Class',
-            'location': self._parse_course_row(0, 5).strip(),
-            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(0, 8), self._parse_course_row(0, 6))
+            'location': self._parse_course_row(5).strip(),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(8), self._parse_course_row(6))
         }
 
     @property
@@ -122,13 +124,13 @@ class CourseParser:
             dict: course attributes as keys and parsed info as values
         """
         return {
-            'crn': self._parse_course_row(0, 1).strip(), 
+            'crn': self._parse_course_row(1).strip(), 
             'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
-            'status': self._parse_course_row(0, 0),
+            'status': self._parse_course_row(0),
         }
 
-    def _parse_course_row(self, course_index, column_index):
-        return self._parse_course_search_results(2, 3, column_index)
+    def _parse_course_row(self, column_index):
+        return self._parse_course_search_results(2, 3 + self._index * 3, column_index)
     
     def _parse_scraped_data(self, scraped_data, table_index, tr_index, td_index):
         return scraped_data.find_all('table')[table_index].find_all('tr')[tr_index].find_all('td')[td_index].get_text()

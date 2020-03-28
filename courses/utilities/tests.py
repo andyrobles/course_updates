@@ -1,4 +1,5 @@
 import unittest
+from bs4 import BeautifulSoup
 from course import CourseSnapshot, CourseSearcher
 
 EXPECTED_COURSE_ATTRIBUTES = [
@@ -40,10 +41,22 @@ class TestCourseSnapshot(unittest.TestCase):
 
 class TestCourseSearcher(unittest.TestCase):
     def setUp(self):
-        self.course_search = CourseSearcher()
+        self.course_search = CourseSearcher(self._mock_course_search_results)
+
+    @property
+    def _mock_course_search_results(self):
+        """Imports data from adjacent file as BeautifulSoup"""
+
+        ADJACENT_FILENAME = 'mock_course_search_results_raw_html_SMALL.txt'
+
+        adjacent_file = open(ADJACENT_FILENAME, "r")
+        raw_html = adjacent_file.read()
+        adjacent_file.close()
+
+        return BeautifulSoup(raw_html, 'html.parser')
 
     def test_0th_index(self):
-        self.assertEqual(0, self.course_search.find_index(71941))
+        self.assertEqual(1, self.course_search.find_index(71941))
 
     def test_1st_index(self):
         self.assertEqual(1, self.course_search.find_index(72024))

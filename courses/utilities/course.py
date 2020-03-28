@@ -4,9 +4,10 @@ import urllib.request
 class CourseSearcher:
     """Purpose is to find course index which allows to later retrieve the a course in O(1) time."""
 
-    def __init__(self):
+    def __init__(self, course_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
-        course_results_page = CourseScraper().scraped_data
+        self.course_results_page = course_results_page
+        # self.course_results_page = CourseScraper().scraped_data
         self._parser = CourseParser(course_results_page)
 
     def find_index(self, crn):
@@ -16,7 +17,8 @@ class CourseSearcher:
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
-        for i in range(50):
+        for i in range(5):
+            print('find_index for loop iteration')
             course_attributes = self._parser.get_course_attributes(i)
             if str(crn) == course_attributes['crn']:
                 print(i)
@@ -32,10 +34,12 @@ class CourseScraper:
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
+        print('Course Scraper Creeated')
         if crn == None:
             crn = ''
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()
+        print(self.course_search_results_soup)
         self.course_details_soup = self.get_course_details_soup()
 
     @property

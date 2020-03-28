@@ -6,8 +6,7 @@ class CourseSearcher:
 
     def __init__(self, course_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
-        self.course_results_page = course_results_page
-        # self.course_results_page = CourseScraper().scraped_data
+        self.course_results_page = CourseScraper().scraped_data if not course_results_page else course_results_page
         self._parser = CourseParser(course_results_page)
 
     def find_index(self, crn):

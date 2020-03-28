@@ -34,17 +34,14 @@ class CourseScraper:
         Parameters:
             crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
         """
-        print('Course Scraper Creeated')
         if crn == None:
             crn = ''
         self._crn = crn
         self.course_search_results_soup = self.get_course_search_results_soup()
-        print(self.course_search_results_soup)
-        self.course_details_soup = self.get_course_details_soup()
 
     @property
     def scraped_data(self):
-        return self.course_search_results_soup, self.course_details_soup
+        return self.course_search_results_soup
 
     def get_course_search_results_html(self):
         crn = str(self._crn) 
@@ -58,15 +55,6 @@ class CourseScraper:
         plain_html = self.get_course_search_results_html()
         course_search_results_soup = BeautifulSoup(plain_html, 'html.parser')
         return course_search_results_soup
-
-    def get_course_details_html(self):
-        url = 'https://ssb.vcccd.edu/prod/pw_pub_sched.p_course_popup?vsub=CS&vcrse=M10P&vterm=202007&vcrn={}'.format(str(self._crn))
-        html_doc = urllib.request.urlopen(url).read()
-        return html_doc
-
-    def get_course_details_soup(self):
-        plain_html = self.get_course_details_html()
-        return BeautifulSoup(plain_html, 'html.parser')
 
 class CourseParser:
     """Parses course data and converts it to python variables"""
@@ -146,7 +134,7 @@ class CourseParser:
 
 class CourseSnapshot:
     def __init__(self, crn):
-        self.course_search_results_soup, self.course_details_soup = CourseScraper(crn).scraped_data
+        self.course_search_results_soup = CourseScraper(crn).scraped_data
         self._course_attributes = CourseParser(self.course_search_results_soup).get_course_attributes(0)
 
     @property

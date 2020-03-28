@@ -56,7 +56,7 @@ class TestCourseSearcher(unittest.TestCase):
         return BeautifulSoup(raw_html, 'html.parser')
 
     def test_0th_index(self):
-        self.assertEqual(1, self.course_search.find_index(71941))
+        self.assertEqual(0, self.course_search.find_index(71941))
 
     def test_1st_index(self):
         self.assertEqual(1, self.course_search.find_index(72024))

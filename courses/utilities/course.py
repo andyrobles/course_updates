@@ -21,7 +21,6 @@ class CourseSearcher:
             print('find_index for loop iteration')
             course_attributes = self._parser.get_course_attributes(i)
             if str(crn) == course_attributes['crn']:
-                print(i)
                 return i
 
         return 1000
@@ -75,21 +74,57 @@ class CourseParser:
         Returns:
             dict: course attributes as keys and parsed info as values.
         """
-        return self._parse_course_attributes()
+        course_attributes = self._basic_course_attributes
 
-    def _parse_course_attributes(self):
-        if self._is_distance_education_class():
-            seating_availability = '{} out of {} spots open'.format(self._parse_course_row(0, 8), self._parse_course_row(0, 6))
+        if self._is_distance_education_course():
+            course_attributes.update(self._distance_education_course_attributes)
         else:
-            seating_availability = '{} out of {} spots open'.format(self._parse_course_row(0, 15), self._parse_course_row(0, 13))
+            course_attributes.update(self._standard_meeting_course_attributes)
+
+        return course_attributes
+
+    @property
+    def _standard_meeting_course_attributes(self):
+        """
+        Handles attribute parsing for a course that meets on campus.
+        
+        Returns:
+            dict: course attributes as keys and parsed info as values.
+        """
+        return {
+            'instructor': self._parse_course_row(0, 16),
+            'meeting_time': '{} {}'.format(self._weekdays, self._time_span),
+            'location': self._parse_course_row(0, 12).strip(),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(0, 15), self._parse_course_row(0, 13))
+        }
+
+    @property
+    def _distance_education_course_attributes(self):
+        """
+        Handles attribute parsing for a distance education class.
+        
+        Returns:
+            dict: course attributes as keys and parsed info as values.
+        """
+        return {
+            'instructor': self._parse_course_row(0, 9),
+            'meeting_time': 'Distance Education Class',
+            'location': self._parse_course_row(0, 5).strip(),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(0, 8), self._parse_course_row(0, 6))
+        }
+
+    @property
+    def _basic_course_attributes(self):
+        """
+        Handles parsing for basic attributes with html arrangement common across all course types
+
+        Returns:
+            dict: course attributes as keys and parsed info as values
+        """
         return {
             'crn': self._parse_course_row(0, 1).strip(), 
             'title': self.course_search_results_soup.findAll("td", {"class": "crn_header"})[0].get_text().rstrip(),
-            'instructor': self._parse_course_row(0, 9) if self._is_distance_education_class() else self._parse_course_row(0, 16),
-            'meeting_time': 'Distance Education Class' if self._is_distance_education_class() else '{} {}'.format(self._weekdays, self._time_span),
-            'location': self._parse_course_row(0, 5).strip() if self._is_distance_education_class() else self._parse_course_row(0, 12).strip(),
             'status': self._parse_course_row(0, 0),
-            'seating_availability': seating_availability
         }
 
     def _parse_course_row(self, course_index, column_index):
@@ -100,9 +135,6 @@ class CourseParser:
 
     def _parse_course_search_results(self, table_index, tr_index, td_index):
         return self._parse_scraped_data(self.course_search_results_soup, table_index, tr_index, td_index)
-
-    def _parse_course_details(self, table_index, tr_index, td_index):
-        return self._parse_scraped_data(self.course_details_soup, table_index, tr_index, td_index)
 
     def _weekday(self, index):
         weekday = self._parse_course_search_results(2, 3, 4 + index)
@@ -128,7 +160,7 @@ class CourseParser:
         time = self._parse_course_search_results(2, 3, 11)
         return time
     
-    def _is_distance_education_class(self):
+    def _is_distance_education_course(self):
         # There are fewer cells in location meeting time column when an online course
         return len(self._weekday(0)) > 5 
 

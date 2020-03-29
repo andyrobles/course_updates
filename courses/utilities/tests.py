@@ -133,7 +133,7 @@ class TestCourseSearcher(unittest.TestCase):
             'crn': '70571',
             'title': 'ACCT M01 - Introduction to Accounting',
             'instructor': 'Macias, Shannon',
-            'meeting_time': 'Distance Education Class: Click CRN for requirements.',
+            'meeting_time': 'Distance Education Class',
             'location': 'Moorpark Online/Internet', 
             'status': 'OPEN',
             'seating_availability': '55 out of 55 spots open',

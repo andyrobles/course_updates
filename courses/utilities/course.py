@@ -7,7 +7,7 @@ class CourseSearcher:
     def __init__(self, course_search_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
         self.course_search_results_page = CourseScraper().scraped_data if not course_search_results_page else course_search_results_page
-        self._parser = CourseParser(course_search_results_page, self.clean_data, 1)
+        self._parser = CourseParser(course_search_results_page, self.clean_data, 2)
 
     def find_index(self, crn):
         """
@@ -24,8 +24,20 @@ class CourseSearcher:
         return 1000
 
     def clean_data(self, course_search_results_page):
-        for table_row in self.course_search_results_page.find_all('td', class_='crn_header'):
-            table_row.find_parent('tr').decompose()
+        """
+        Removes table rows for simpler parsing
+
+        Parameters:
+            course_results_page (BeautifulSoup): Course results page from VCCCD website
+        """
+        # Remove crn header rows
+        for table_data in self.course_search_results_page.find_all('td', class_='crn_header'):
+            table_data.find_parent('tr').decompose()
+
+        # Remove data header rows
+        for table_data in self.course_search_results_page.find_all('td', class_='column_header_left', text='Status'):
+            parent = table_data.find_parent('tr')
+            parent.decompose()
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""

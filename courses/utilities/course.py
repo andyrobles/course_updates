@@ -19,20 +19,21 @@ class CourseSearcher:
         Returns
             dict: course attributes as keys and parsed info as values.
         """
-
         crn_table_data = self.course_search_results_page.find('a', text='{} '.format(str(crn)))
-        status_table_data = crn_table_data.find_parent('td').find_previous_sibling('td')
+        self._status_table_data = crn_table_data.find_parent('td').find_previous_sibling('td')
         return {
             'crn': crn_table_data.get_text().strip(),
-            'title': status_table_data.find_parent('tr').find_previous('td', class_='crn_header').get_text().strip(),
-            'status': self.get_sibling_table_data(status_table_data, 0),
-            'location': self.get_sibling_table_data(status_table_data, 12),
-            'instructor': self.get_sibling_table_data(status_table_data, 16),
-            'seating_availability': '{} out of {} spots open'.format(self.get_sibling_table_data(status_table_data, 15), self.get_sibling_table_data(status_table_data, 13)),
-            'meeting_time': self.get_meeting_time(status_table_data.find_next_sibling('td').find_next_sibling('td').find_next_sibling('td').find_next_sibling('td'))
+            'title': self._status_table_data.find_parent('tr').find_previous('td', class_='crn_header').get_text().strip(),
+            'status': self._parse_course_row(0),
+            'location': self._parse_course_row(12),
+            'instructor': self._parse_course_row(16),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(15), self._parse_course_row(13)),
+            'meeting_time': self._meeting_time
         }
 
-    def get_meeting_time(self, table_data):
+    @property
+    def _meeting_time(self):
+        table_data = self._status_table_data.find_next_sibling('td').find_next_sibling('td').find_next_sibling('td').find_next_sibling('td')
         substring = ''
         num_days = 0
         for i in range(8):
@@ -47,11 +48,10 @@ class CourseSearcher:
             table_data = table_data.find_next_sibling('td')
         substring = substring.strip(',')
         return substring.strip()
-        
-
-
-    def get_sibling_table_data(self, table_data, n):
+    
+    def _parse_course_row(self, n):
         """Traverses adjacent table data siblings n times and returns text"""
+        table_data = self._status_table_data
         for i in range(n):
             table_data = table_data.find_next_sibling('td')
 

@@ -19,16 +19,64 @@ class CourseSearcher:
         Returns
             dict: course attributes as keys and parsed info as values.
         """
-        crn_table_data = self.course_search_results_page.find('a', text='{} '.format(str(crn)))
-        self._status_table_data = crn_table_data.find_parent('td').find_previous_sibling('td')
+        self._crn_table_data = self.course_search_results_page.find('a', text='{} '.format(str(crn)))
+        self._status_table_data = self._crn_table_data.find_parent('td').find_previous_sibling('td')
+        course_attributes = self._basic_course_attributes
+
+        if self._is_distance_education_course:
+            course_attributes.update(self._distance_education_course_attributes)
+        else:
+            course_attributes.update(self._standard_meeting_course_attributes)
+
+        return course_attributes
+
+    @property
+    def _is_distance_education_course(self):
+        """Returns True if this course is a distance education course and false otherwise."""
+        return True if 'Distance' in self._parse_course_row(4) else False
+
+    @property
+    def _standard_meeting_course_attributes(self):
+        """
+        Handles attribute parsing for a course that meets on campus.
+        
+        Returns:
+            dict: course attributes as keys and parsed info as values.
+        """
         return {
-            'crn': crn_table_data.get_text().strip(),
+            'instructor': self._parse_course_row(16),
+            'meeting_time': self._meeting_time,
+            'location': self._parse_course_row(12),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(15), self._parse_course_row(13))
+        }
+
+    @property
+    def _distance_education_course_attributes(self):
+        """
+        Handles attribute parsing for a distance education class.
+        
+        Returns:
+            dict: course attributes as keys and parsed info as values.
+        """
+        return {
+            'instructor': self._parse_course_row(9),
+            'meeting_time': self._parse_course_row(4),
+            'location': self._parse_course_row(5),
+            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(8), self._parse_course_row(6))
+        }
+
+    @property
+    def _basic_course_attributes(self):
+        """
+        Handles parsing for basic attributes with html arrangement common across all course types
+
+        Returns:
+            dict: course attributes as keys and parsed info as values
+        """
+        return {
+            'crn': self._crn_table_data.get_text().strip(), 
             'title': self._status_table_data.find_parent('tr').find_previous('td', class_='crn_header').get_text().strip(),
             'status': self._parse_course_row(0),
-            'location': self._parse_course_row(12),
-            'instructor': self._parse_course_row(16),
-            'seating_availability': '{} out of {} spots open'.format(self._parse_course_row(15), self._parse_course_row(13)),
-            'meeting_time': self._meeting_time
         }
 
     @property
@@ -56,7 +104,6 @@ class CourseSearcher:
             table_data = table_data.find_next_sibling('td')
 
         return table_data.get_text().strip()
-
 
     def find_index(self, crn):
         """

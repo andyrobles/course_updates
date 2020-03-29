@@ -7,7 +7,56 @@ class CourseSearcher:
     def __init__(self, course_search_results_page=None):
         """Scrapes course data from VCCCD system and stores it in the class."""
         self.course_search_results_page = CourseScraper().scraped_data if not course_search_results_page else course_search_results_page
-        self._parser = CourseParser(course_search_results_page, self.clean_data, 2)
+        self._parser = CourseParser(course_search_results_page)
+
+    def find_course(self, crn):
+        """
+        Searches scraped data to find the course by given CRN.
+
+        Parameters:
+            crn (int): The crn, or Course Reference Number, is the 5-digit number assigned to each course in the VCCCD system.
+
+        Returns
+            dict: course attributes as keys and parsed info as values.
+        """
+
+        crn_table_data = self.course_search_results_page.find('a', text='{} '.format(str(crn)))
+        status_table_data = crn_table_data.find_parent('td').find_previous_sibling('td')
+        return {
+            'crn': crn_table_data.get_text().strip(),
+            'title': status_table_data.find_parent('tr').find_previous('td', class_='crn_header').get_text().strip(),
+            'status': self.get_sibling_table_data(status_table_data, 0),
+            'location': self.get_sibling_table_data(status_table_data, 12),
+            'instructor': self.get_sibling_table_data(status_table_data, 16),
+            'seating_availability': '{} out of {} spots open'.format(self.get_sibling_table_data(status_table_data, 15), self.get_sibling_table_data(status_table_data, 13)),
+            'meeting_time': self.get_meeting_time(status_table_data.find_next_sibling('td').find_next_sibling('td').find_next_sibling('td').find_next_sibling('td'))
+        }
+
+    def get_meeting_time(self, table_data):
+        substring = ''
+        num_days = 0
+        for i in range(8):
+            text = table_data.get_text().strip()
+            num_days += 1
+            if num_days == 8:
+                substring = '{} {}'.format(substring, text)
+            elif text != '':
+                substring = '{}, {}'.format(substring, text)
+            else:
+                substring = '{}{}'.format(substring, text)
+            table_data = table_data.find_next_sibling('td')
+        substring = substring.strip(',')
+        return substring.strip()
+        
+
+
+    def get_sibling_table_data(self, table_data, n):
+        """Traverses adjacent table data siblings n times and returns text"""
+        for i in range(n):
+            table_data = table_data.find_next_sibling('td')
+
+        return table_data.get_text().strip()
+
 
     def find_index(self, crn):
         """
@@ -22,22 +71,6 @@ class CourseSearcher:
                 return i
 
         return 1000
-
-    def clean_data(self, course_search_results_page):
-        """
-        Removes table rows for simpler parsing
-
-        Parameters:
-            course_results_page (BeautifulSoup): Course results page from VCCCD website
-        """
-        # Remove crn header rows
-        for table_data in self.course_search_results_page.find_all('td', class_='crn_header'):
-            table_data.find_parent('tr').decompose()
-
-        # Remove data header rows
-        for table_data in self.course_search_results_page.find_all('td', class_='column_header_left', text='Status'):
-            parent = table_data.find_parent('tr')
-            parent.decompose()
 
 class CourseScraper:
     """Scrapes course data from VCCCD System and stores it in the class"""

@@ -8,9 +8,6 @@ from .models import Course
 
 from courses.utilities import CourseSnapshot, FunctionLoop
 
-function_loop = FunctionLoop()
-function_loop.execute()
-
 @login_required
 def index(request):
 	return render(request, 'courses/index.html', {'course_list': Course.objects.filter(user=request.user)})

@@ -8,6 +8,8 @@ from .models import Course
 
 from courses.utilities import CourseSnapshot, FunctionLoop
 
+from datetime import datetime
+
 @login_required
 def index(request):
 	# Update course status and seating availability if it has changed on course website
@@ -17,9 +19,12 @@ def index(request):
 			course_model.status = course_snapshot.status
 			course_model.seating_availability = course_snapshot.seating_availability
 			course_model.save()
-	
+
 	# Render most up to date courses
-	return render(request, 'courses/index.html', {'course_list': Course.objects.filter(user=request.user)})
+	return render(request, 'courses/index.html', {
+		'course_list': Course.objects.filter(user=request.user),
+		'timestamp': datetime.now().__str__()
+	})
 
 def course_snapshot_changed(course_snapshot, course_model):
 	return course_snapshot.status != course_model.status and course_snapshot.seating_availability != course_model.seating_availability

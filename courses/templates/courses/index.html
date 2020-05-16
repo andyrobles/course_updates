@@ -16,7 +16,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="m-3">
+
+<div class="mt-2 ml-2">
+	<a class="btn btn-light border" href="{% url 'courses:index' %}" role="button">
+		<i class="fas fa-sync-alt"></i>
+		Refresh Info
+	</a>
+	
+</div>
+
+<div class="m-2">
+	Most recent course info refresh {{ timestamp }}
 	<table class="table table-bordered">
 		<thead>
 			<tr>

@@ -25,7 +25,7 @@ SECRET_KEY = 'fxizp-f_z^jt@=v34^hw3-l*v_+(s8*1)t^d@&(8_$*zqtfl#-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['andyrobles.pythonanywhere.com']
+ALLOWED_HOSTS = ['www.courseupdates.app', 'andyrobles.pythonanywhere.com']
 
 
 # Application definition

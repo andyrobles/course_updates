@@ -10,7 +10,19 @@ from courses.utilities import CourseSnapshot, FunctionLoop
 
 @login_required
 def index(request):
+	# Update course status and seating availability if it has changed on course website
+	for course_model in Course.objects.filter(user=request.user):
+		course_snapshot = CourseSnapshot(course_model.crn)
+		if course_snapshot_changed(course_snapshot, course_model):
+			course_model.status = course_snapshot.status
+			course_model.seating_availability = course_snapshot.seating_availability
+			course_model.save()
+	
+	# Render most up to date courses
 	return render(request, 'courses/index.html', {'course_list': Course.objects.filter(user=request.user)})
+
+def course_snapshot_changed(course_snapshot, course_model):
+	return course_snapshot.status != course_model.status and course_snapshot.seating_availability != course_model.seating_availability
 
 @login_required
 def add_course(request):

@@ -14,7 +14,7 @@ def create_account(request):
 		# Get submitted create account form
 		create_account_form = CreateAccountForm(request.POST)
 
-		if create_account_form.is_valid() and is_valid_phone_number(create_account_form.cleaned_data['phone_number']):
+		if create_account_form.is_valid():
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
 				return render(request, 'components/dialogue.html', {
@@ -25,9 +25,9 @@ def create_account(request):
 					'message': 'Password and Confirm password fields do not match'
 				})
 
-			# Create a user with the supplied email and password
+			# Create a user with the supplied username and password
 			user = User.objects.create_user(
-				username=create_account_form.cleaned_data['phone_number'],
+				username=create_account_form.cleaned_data['username'],
 				password=create_account_form.cleaned_data['password']
 			)
 
@@ -60,10 +60,10 @@ def sign_in(request):
 		# Get form from post request
 		sign_in_form = SignInForm(request.POST)
 
-		if sign_in_form.is_valid() and is_valid_phone_number(sign_in_form.cleaned_data['phone_number']):
+		if sign_in_form.is_valid():
 			# Authenticate user with form data
 			user = authenticate(
-				username=sign_in_form.cleaned_data['phone_number'],
+				username=sign_in_form.cleaned_data['username'],
 				password=sign_in_form.cleaned_data['password']
 			)
 
@@ -100,9 +100,6 @@ def sign_in(request):
 		'icon': 'sign-in-alt',
 		'subject': 'Sign In'
 	})
-
-def is_valid_phone_number(string_value):
-	return len(string_value) == 10 and string_value.isdigit()
 
 def sign_out(request):
 	# Sign out whichever user is currently signed in

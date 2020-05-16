@@ -1,6 +1,6 @@
 import unittest
 from bs4 import BeautifulSoup
-from .course import CourseSnapshot, CourseSearcher
+from .course import CourseSnapshot
 
 EXPECTED_COURSE_ATTRIBUTES = [
     {

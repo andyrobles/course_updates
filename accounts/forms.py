@@ -1,11 +1,10 @@
 from django import forms
 
 class CreateAccountForm(forms.Form):
-    phone_number=forms.CharField(label='Phone Number', required=True, widget=forms.TextInput(
+    username=forms.CharField(label='Username', required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'autocomplete': 'off',
-            'placeholder': '9 digits numbers only: XXXXXXXXX'
+            'autocomplete': 'off'
         }
     ))
     password=forms.CharField(label='Password', required=True, widget=forms.TextInput(
@@ -24,11 +23,10 @@ class CreateAccountForm(forms.Form):
     ))
 
 class SignInForm(forms.Form):
-    phone_number=forms.CharField(label='Phone Number', required=True, widget=forms.TextInput(
+    username=forms.CharField(label='Username', required=True, widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'autocomplete': 'off',
-            'placeholder': '9 digits numbers only: XXXXXXXXX'
+            'autocomplete': 'off'
         }
     ))
     password=forms.CharField(label='Password', required=True, widget=forms.TextInput(

@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['www.courseupdates.app', 'andyrobles.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'components.apps.ComponentsConfig',
-    'accounts.apps.AccountsConfig',
 	'courses.apps.CoursesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,12 +122,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "accounts/static"),
-    os.path.join(BASE_DIR, "components/static")
+    os.path.join(BASE_DIR, "components/static"),
+    os.path.join(BASE_DIR, "courses/static")
 ]
 
 # Authentication
 
-LOGIN_URL = '/accounts/'
+LOGIN_URL = '/landing/'
 
 STATIC_ROOT = '/home/andyrobles/course_updates/static'

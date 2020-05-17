@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'components.apps.ComponentsConfig',
 	'courses.apps.CoursesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -122,7 +121,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "components/static"),
     os.path.join(BASE_DIR, "courses/static")
 ]
 

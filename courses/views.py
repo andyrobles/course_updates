@@ -26,7 +26,7 @@ def create_account(request):
 		if create_account_form.is_valid():
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
-				return render(request, 'components/dialogue.html', {
+				return render(request, 'courses/dialogue.html', {
 					'close_url': reverse('courses:landing'),
 					'background_template': 'courses/landing.html',
 					'subject': 'Try Again',
@@ -47,7 +47,7 @@ def create_account(request):
 			return redirect(reverse('courses:index'))
 		
 		# Return error message if invalid form
-		return render(request, 'components/dialogue.html', {
+		return render(request, 'courses/dialogue.html', {
 			'close_url': reverse('courses:landing'),
 			'background_template': 'courses/landing.html',
 			'subject': 'Try Again',
@@ -56,7 +56,7 @@ def create_account(request):
 		})
 
 	# Render create account form if a get request		
-	return render(request, 'components/dialogue.html', {
+	return render(request, 'courses/dialogue.html', {
 		'close_url': reverse('courses:landing'),
 		'background_template': 'courses/landing.html',
 		'form': CreateAccountForm(),
@@ -84,7 +84,7 @@ def sign_in(request):
 				return redirect(reverse('courses:index'))
 
 			# Return an invalid login error message
-			return render(request, 'components/dialogue.html', {
+			return render(request, 'courses/dialogue.html', {
 				'close_url': reverse('courses:landing'),
 				'background_template': 'courses/landing.html',
 				'icon': 'exclamation-triangle',
@@ -93,7 +93,7 @@ def sign_in(request):
 			})
 		else:
 			# Tell user to try again if form was invalid
-			return render(request, 'components/dialogue.html', {
+			return render(request, 'courses/dialogue.html', {
 				'close_url': reverse('courses:landing'),
 				'background_template': 'courses/landing.html',
 				'icon': 'exclamation-triangle',
@@ -102,7 +102,7 @@ def sign_in(request):
 			})
 
 	# Provide user a blank sign in form
-	return render(request, 'components/dialogue.html', {
+	return render(request, 'courses/dialogue.html', {
 		'close_url': reverse('courses:landing'),
 		'background_template': 'courses/landing.html',
 		'form': SignInForm(),
@@ -151,7 +151,7 @@ def add_course(request):
 			identical_courses = Course.objects.filter(user=request.user, crn=course_snapshot.crn)
 
 			if len(identical_courses) >= 1:
-				return render(request, 'components/dialogue.html', {
+				return render(request, 'courses/dialogue.html', {
 					'close_url': reverse('courses:index'),
 					'background_template': 'courses/index.html',
 					'course_list': Course.objects.filter(user=request.user),
@@ -177,7 +177,7 @@ def add_course(request):
 			
 		else:
 			# Return error message if invalid form
-			return render(request, 'components/dialogue.html', {
+			return render(request, 'courses/dialogue.html', {
 				'close_url': reverse('courses:index'),
 				'background_template': 'courses/index.html',
 				'course_list': Course.objects.filter(user=request.user),
@@ -187,7 +187,7 @@ def add_course(request):
 			})
 
 	# Render create course form if a get request
-	return render(request, 'components/dialogue.html', {
+	return render(request, 'courses/dialogue.html', {
 		'close_url': reverse('courses:index'),
 		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),
@@ -212,7 +212,7 @@ def remove_course(request):
 			return redirect(reverse('courses:index'))
 
 		# Return error form when form is invalid
-		return render(request, 'components/dialogue.html', {
+		return render(request, 'courses/dialogue.html', {
 			'close_url': reverse('courses:index'),
 			'background_template': 'courses/index.html',
 			'course_list': Course.objects.filter(user=request.user),
@@ -225,7 +225,7 @@ def remove_course(request):
 	remove_course_form.fields['course'].queryset=Course.objects.filter(user=request.user)
 			
 	# Return blank remove coures form when request method is get
-	return render(request, 'components/dialogue.html', {
+	return render(request, 'courses/dialogue.html', {
 		'close_url': reverse('courses:index'),
 		'background_template': 'courses/index.html',
 		'course_list': Course.objects.filter(user=request.user),

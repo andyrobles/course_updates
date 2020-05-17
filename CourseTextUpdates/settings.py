@@ -128,6 +128,6 @@ STATICFILES_DIRS = [
 
 # Authentication
 
-LOGIN_URL = '/landing/'
+LOGIN_URL = '/landing'
 
 STATIC_ROOT = '/home/andyrobles/course_updates/static'

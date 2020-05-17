@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'components.apps.ComponentsConfig',
-    'accounts.apps.AccountsConfig',
 	'courses.apps.CoursesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,10 +122,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "accounts/static"),
-    os.path.join(BASE_DIR, "components/static")
+    os.path.join(BASE_DIR, "components/static"),
+    os.path.join(BASE_DIR, "courses/static")
 ]
 
 # Authentication
 
-LOGIN_URL = '/accounts/'
+LOGIN_URL = '/landing'

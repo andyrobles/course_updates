@@ -23,7 +23,10 @@ def create_account(request):
 		# Get submitted create account form
 		create_account_form = CreateAccountForm(request.POST)
 
-		if create_account_form.is_valid():
+		try:
+			if not create_account_form.is_valid():
+				raise Exception("Submitted form was invalid.")
+
 			# Tell user to try again if confirm password does not match
 			if create_account_form.cleaned_data['password'] != create_account_form.cleaned_data['confirm_password']:
 				return render(request, 'courses/dialogue.html', {
@@ -45,15 +48,17 @@ def create_account(request):
 
 			# Redirect to index page
 			return redirect(reverse('courses:index'))
-		
-		# Return error message if invalid form
-		return render(request, 'courses/dialogue.html', {
-			'close_url': reverse('courses:landing'),
-			'background_template': 'courses/landing.html',
-			'subject': 'Try Again',
-			'icon': 'exclamation-triangle',
-			'message': 'Form contained one or more invalid fields'
-		})
+
+		except Exception as err:
+			# Return error message if invalid form
+			return render(request, 'courses/dialogue.html', {
+				'close_url': reverse('courses:landing'),
+				'background_template': 'courses/landing.html',
+				'subject': 'Try Again',
+				'icon': 'exclamation-triangle',
+				'message': 'Form contained one or more invalid fields or username already exists.'
+			})		
+
 
 	# Render create account form if a get request		
 	return render(request, 'courses/dialogue.html', {
@@ -69,7 +74,10 @@ def sign_in(request):
 		# Get form from post request
 		sign_in_form = SignInForm(request.POST)
 
-		if sign_in_form.is_valid():
+		try:
+			if not sign_in_form.is_valid():
+				raise Exception("Submitted form was invalid.")
+
 			# Authenticate user with form data
 			user = authenticate(
 				username=sign_in_form.cleaned_data['username'],
@@ -91,7 +99,7 @@ def sign_in(request):
 				'subject': 'Try Again',
 				'message': 'Username or password were incorrect'
 			})
-		else:
+		except:
 			# Tell user to try again if form was invalid
 			return render(request, 'courses/dialogue.html', {
 				'close_url': reverse('courses:landing'),
@@ -142,7 +150,10 @@ def add_course(request):
 		# Get submitted course form
 		course_form = AddCourseForm(request.POST)
 
-		if course_form.is_valid():
+		try:
+			if not course_form.is_valid():
+				raise Exception("Submitted form was invalid.")
+
 			# Get snapshot of course specified by user by CRN
 			course_snapshot = CourseSnapshot(course_form.cleaned_data['course_reference_number'])
 
@@ -175,7 +186,7 @@ def add_course(request):
 			
 			return redirect(reverse('courses:index'))
 			
-		else:
+		except:
 			# Return error message if invalid form
 			return render(request, 'courses/dialogue.html', {
 				'close_url': reverse('courses:index'),
@@ -183,7 +194,7 @@ def add_course(request):
 				'course_list': Course.objects.filter(user=request.user),
 				'subject': 'Try Again',
 				'icon': 'exclamation-triangle',
-				'message': 'Form contained one or more invalid fields'
+				'message': 'Form contained one or more invalid fields or CRN does not exist.'
 			})
 
 	# Render create course form if a get request
